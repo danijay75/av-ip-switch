@@ -16,7 +16,9 @@ namespace EasyIpSwitch
             RunningFromDocumentsDoesNotFailAndReusesShortcut();
             UpdatesExistingAppShortcutWithoutDuplicates();
             PreservesUnrelatedUserFileOnDesktop();
+            IsInstalledRequiresMatchingDocumentsCopyAndDesktopShortcut();
             MainFormPlacesShortcutButtonAndInvokesBackend();
+            MainFormHidesShortcutButtonWhenInstalledAndShowsOnFailure();
             return _assertions;
         }
 
@@ -217,6 +219,97 @@ namespace EasyIpSwitch
             VerifyMainFormShortcutClick(true, "Disque plein", false);
         }
 
+        private static void IsInstalledRequiresMatchingDocumentsCopyAndDesktopShortcut()
+        {
+            string sourceDir = CreateTempDir("AvIpSwitch-src");
+            string docsDir = CreateTempDir("AvIpSwitch-docs");
+            string desktopDir = CreateTempDir("AvIpSwitch-desk");
+            try
+            {
+                Assert(!AppShortcut.IsInstalled(docsDir, desktopDir),
+                    "Fresh folders must not report shortcut as installed.");
+                Assert(!AppShortcut.IsInstalled(Path.Combine(docsDir, "missing"), desktopDir),
+                    "Missing Documents directory must fail open (return false).");
+                Assert(!AppShortcut.IsInstalled(docsDir, Path.Combine(desktopDir, "missing")),
+                    "Missing Desktop directory must fail open (return false).");
+
+                string docsExe = Path.Combine(docsDir, "AV IP-Switch v1.2.2.exe");
+                File.WriteAllBytes(docsExe, new byte[] { 1, 2, 3 });
+                Assert(!AppShortcut.IsInstalled(docsDir, desktopDir),
+                    "Having only the Documents copy without a Desktop shortcut must keep the button visible.");
+
+                string oldDocsExe = Path.Combine(docsDir, "AV IP-Switch v1.2.1.exe");
+                File.WriteAllBytes(oldDocsExe, new byte[] { 1, 2, 3 });
+                string linkPath = Path.Combine(desktopDir, "AV IP-Switch.lnk");
+                object shell = new ShellLinkCom();
+                try
+                {
+                    IShellLinkW link = (IShellLinkW)shell;
+                    link.SetPath(oldDocsExe);
+                    link.SetWorkingDirectory(docsDir);
+                    ((System.Runtime.InteropServices.ComTypes.IPersistFile)shell).Save(linkPath, true);
+                }
+                finally
+                {
+                    if (System.Runtime.InteropServices.Marshal.IsComObject(shell))
+                    {
+                        System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell);
+                    }
+                }
+                Assert(!AppShortcut.IsInstalled(docsDir, desktopDir),
+                    "A shortcut pointing to an older version must keep the button visible.");
+
+                string sourceExe = Path.Combine(sourceDir, "AV IP-Switch.exe");
+                File.WriteAllBytes(sourceExe, new byte[] { 4, 5, 6 });
+                AppShortcutResult installed = AppShortcut.Install(sourceExe, docsDir, desktopDir, null);
+                Assert(installed.Success, "Install must update the shortcut to v1.2.2.");
+                Assert(AppShortcut.IsInstalled(docsDir, desktopDir),
+                    "IsInstalled must return true once both v1.2.2 copy and matching shortcut exist.");
+            }
+            finally
+            {
+                DeleteDir(sourceDir);
+                DeleteDir(docsDir);
+                DeleteDir(desktopDir);
+            }
+        }
+
+        private static void ShowHidden(MainForm form)
+        {
+            form.StartPosition = FormStartPosition.Manual;
+            form.Location = new System.Drawing.Point(-32000, -32000);
+            form.ShowInTaskbar = false;
+            form.Show();
+        }
+
+        private static void MainFormHidesShortcutButtonWhenInstalledAndShowsOnFailure()
+        {
+            FakeAppShortcutBackend installedBackend = new FakeAppShortcutBackend(false);
+            installedBackend.Installed = true;
+            using (MainForm form = new MainForm(null, installedBackend))
+            {
+                ShowHidden(form);
+                FlatButton btnShortcut = Field<FlatButton>(form, "_btnShortcut");
+                FlatButton btnConnections = Field<FlatButton>(form, "_btnConnections");
+                TabBar tabs = Field<TabBar>(form, "_tabs");
+
+                Assert(!btnShortcut.Visible, "Shortcut button must be hidden when already installed.");
+                Assert(btnConnections.Visible && tabs.Right <= btnConnections.Left,
+                    "Tabs and Connections button must remain properly laid out when shortcut button is hidden.");
+            }
+
+            FakeAppShortcutBackend failingCheckBackend = new FakeAppShortcutBackend(false);
+            failingCheckBackend.ThrowOnIsInstalled = true;
+            using (MainForm form = new MainForm(null, failingCheckBackend))
+            {
+                ShowHidden(form);
+                FlatButton btnShortcut = Field<FlatButton>(form, "_btnShortcut");
+
+                Assert(btnShortcut.Visible,
+                    "Shortcut button must remain visible by default if installation check fails.");
+            }
+        }
+
         private static void VerifyMainFormShortcutClick(bool shouldFail, string expectedStatus, bool expectSuccessColor)
         {
             FakeAppShortcutBackend backend = new FakeAppShortcutBackend(shouldFail);
@@ -226,7 +319,7 @@ namespace EasyIpSwitch
             using (ApplicationContext context = new ApplicationContext())
             using (System.Windows.Forms.Timer timeout = new System.Windows.Forms.Timer())
             {
-                IntPtr handle = form.Handle;
+                ShowHidden(form);
                 FlatButton btnShortcut = Field<FlatButton>(form, "_btnShortcut");
                 Label status = Field<Label>(form, "_lblStatus");
                 status.TextChanged += delegate
@@ -241,6 +334,10 @@ namespace EasyIpSwitch
                         Assert(backend.Apartment == ApartmentState.STA, "COM shortcut backend must run on an STA thread.");
                         Assert(btnShortcut.Enabled && !Field<bool>(form, "_appShortcutBusy"),
                             "Shortcut button must be re-enabled after completion.");
+                        Assert(btnShortcut.Visible == shouldFail,
+                            shouldFail
+                                ? "Shortcut button must remain visible when creation fails."
+                                : "Shortcut button must disappear immediately after successful creation.");
                         Assert(status.ForeColor == (expectSuccessColor ? Theme.Success : Theme.Danger),
                             "Status color must match outcome.");
                         completed = true;
@@ -303,12 +400,23 @@ namespace EasyIpSwitch
         private sealed class FakeAppShortcutBackend : IAppShortcutBackend
         {
             private readonly bool _fail;
+            public bool Installed;
+            public bool ThrowOnIsInstalled;
             public int Calls;
             public ApartmentState Apartment;
 
             public FakeAppShortcutBackend(bool fail)
             {
                 _fail = fail;
+            }
+
+            public bool IsInstalled()
+            {
+                if (ThrowOnIsInstalled)
+                {
+                    throw new UnauthorizedAccessException("Acces refuse");
+                }
+                return Installed;
             }
 
             public AppShortcutResult CreateCopyAndShortcut()

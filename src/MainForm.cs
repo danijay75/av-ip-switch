@@ -452,6 +452,8 @@ namespace EasyIpSwitch
                             {
                                 _tip.SetToolTip(_btnShortcut,
                                     L.F("Copie : {0}\r\nRaccourci : {1}", result.CopyPath, result.ShortcutPath));
+                                _btnShortcut.Visible = false;
+                                LayoutChrome();
                             }
                             SetStatus(result.Message, result.Success ? StatusKind.Success : StatusKind.Error);
                         });
@@ -532,6 +534,12 @@ namespace EasyIpSwitch
             }
         }
 
+        internal void RefreshShortcutButtonVisibility()
+        {
+            _btnShortcut.Visible = !AppShortcut.CheckInstalled(_appShortcutBackend);
+            LayoutChrome();
+        }
+
         private void OpenUrl(string url)
         {
             try
@@ -561,6 +569,7 @@ namespace EasyIpSwitch
             height = Math.Max(height, MinimumSize.Height);
             ClientSize = new Size(width, height);
 
+            RefreshShortcutButtonVisibility();
             LayoutChrome();
             UpdateFooter();
             RefreshAdapters(true, false);
@@ -807,9 +816,10 @@ namespace EasyIpSwitch
             int shortcutLeft = connectionsLeft - Theme.S(10) - shortcutWidth;
             _btnConnections.SetBounds(connectionsLeft, Theme.S(15), connectionsWidth, Theme.S(34));
             _btnShortcut.SetBounds(shortcutLeft, Theme.S(15), shortcutWidth, Theme.S(34));
+            int tabsMaxRight = _btnShortcut.Visible ? _btnShortcut.Left : _btnConnections.Left;
             _tabs.SetBounds(pad, Theme.S(12),
                 Math.Min(Math.Max(Theme.S(240), _tabs.PreferredWidth),
-                    Math.Max(Theme.S(240), _btnShortcut.Left - pad - Theme.S(8))),
+                    Math.Max(Theme.S(240), tabsMaxRight - pad - Theme.S(8))),
                 Theme.S(40));
 
             int viewsTop = Theme.S(56);

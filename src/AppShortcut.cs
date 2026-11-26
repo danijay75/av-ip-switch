@@ -76,11 +76,26 @@ namespace EasyIpSwitch
 
     internal interface IAppShortcutBackend
     {
+        bool IsInstalled();
         AppShortcutResult CreateCopyAndShortcut();
     }
 
     internal sealed class WindowsAppShortcutBackend : IAppShortcutBackend
     {
+        public bool IsInstalled()
+        {
+            try
+            {
+                string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                return AppShortcut.IsInstalled(documents, desktop);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public AppShortcutResult CreateCopyAndShortcut()
         {
             string sourceExe = Application.ExecutablePath;
@@ -92,6 +107,58 @@ namespace EasyIpSwitch
 
     internal static class AppShortcut
     {
+        internal static bool CheckInstalled(IAppShortcutBackend backend)
+        {
+            if (backend == null)
+            {
+                return false;
+            }
+            try
+            {
+                return backend.IsInstalled();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal static bool IsInstalled(string documentsDirectory, string desktopDirectory)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(documentsDirectory) || !Directory.Exists(documentsDirectory))
+                {
+                    return false;
+                }
+                if (string.IsNullOrWhiteSpace(desktopDirectory) || !Directory.Exists(desktopDirectory))
+                {
+                    return false;
+                }
+
+                string targetExePath = Path.Combine(documentsDirectory, CopyFileName());
+                if (!File.Exists(targetExePath))
+                {
+                    return false;
+                }
+
+                string[] links = Directory.GetFiles(desktopDirectory, AppInfo.ProductName + "*.lnk");
+                for (int i = 0; i < links.Length; i++)
+                {
+                    string existingTarget;
+                    if (TryReadShortcutTarget(links[i], out existingTarget) && PathsEqual(existingTarget, targetExePath))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static AppShortcutResult Execute()
         {
             return Execute(new WindowsAppShortcutBackend());
