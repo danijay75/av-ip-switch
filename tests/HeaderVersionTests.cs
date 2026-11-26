@@ -14,6 +14,7 @@ namespace EasyIpSwitch
         public static int Run()
         {
             VersionLabelMatchesRelease();
+            LandingPageUrlFollowsLanguage();
             WindowTitleCarriesVersion();
             HeaderPaintsVersionAfterName();
             return _assertions;
@@ -21,11 +22,36 @@ namespace EasyIpSwitch
 
         private static void VersionLabelMatchesRelease()
         {
-            Assert(AppInfo.Version == "1.1.3", "The release must be versioned 1.1.3.");
-            Assert(AppInfo.VersionLabel == "v1.1.3", "The displayed version must read v1.1.3.");
+            Assert(AppInfo.ProductName == "AV IP-Switch", "The product name must be AV IP-Switch.");
+            Assert(AppInfo.Version == "1.2.1", "The release must be versioned 1.2.1.");
+            Assert(AppInfo.VersionLabel == "v1.2.1", "The displayed version must read v1.2.1.");
             Version assembly = typeof(AppInfo).Assembly.GetName().Version;
-            Assert(assembly.Major == 1 && assembly.Minor == 1 && assembly.Build == 3,
-                "The assembly must carry the 1.1.3 version.");
+            Assert(assembly.Major == 1 && assembly.Minor == 2 && assembly.Build == 1,
+                "The assembly must carry the 1.2.1 version.");
+        }
+
+        private static void LandingPageUrlFollowsLanguage()
+        {
+            AppLanguage previous = L.Current;
+            try
+            {
+                L.SetLanguage(AppLanguage.French, false);
+                Assert(AppInfo.LandingPageUrl == "https://www.angelivisions.com/fr/av-ip-switch",
+                    "French landing page URL must target /fr/av-ip-switch.");
+                L.SetLanguage(AppLanguage.English, false);
+                Assert(AppInfo.LandingPageUrl == "https://www.angelivisions.com/en/av-ip-switch",
+                    "English landing page URL must target /en/av-ip-switch.");
+                L.SetLanguage(AppLanguage.German, false);
+                Assert(AppInfo.LandingPageUrl == "https://www.angelivisions.com/de/av-ip-switch",
+                    "German landing page URL must target /de/av-ip-switch.");
+                L.SetLanguage(AppLanguage.Spanish, false);
+                Assert(AppInfo.LandingPageUrl == "https://www.angelivisions.com/es/av-ip-switch",
+                    "Spanish landing page URL must target /es/av-ip-switch.");
+            }
+            finally
+            {
+                L.SetLanguage(previous, false);
+            }
         }
 
         private static void WindowTitleCarriesVersion()

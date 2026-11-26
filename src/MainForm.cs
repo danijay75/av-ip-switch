@@ -55,6 +55,7 @@ namespace EasyIpSwitch
         private readonly Label _placeholder = new Label();
         private readonly TabBar _tabs = new TabBar();
         private readonly PingView _pingView = new PingView();
+        private readonly ScanView _scanView = new ScanView();
         private readonly FlatButton _btnRefresh = new FlatButton();
         private readonly FlatButton _btnConnections = new FlatButton();
         private readonly LanguageSelector _languageSelector = new LanguageSelector();
@@ -138,7 +139,7 @@ namespace EasyIpSwitch
             _pillAdmin.Visible = false;
             _pillAdmin.Cursor = Cursors.Hand;
             _pillAdmin.Click += delegate { PromptElevation(); };
-            _tip.SetToolTip(_pillAdmin, L.T("Cliquez pour relancer Easy IP-Switch avec les droits administrateur"));
+            _tip.SetToolTip(_pillAdmin, L.T("Cliquez pour relancer AV IP-Switch avec les droits administrateur"));
             _header.Controls.Add(_pillAdmin);
 
             _themeToggle.SetSelectedSilent(0);
@@ -162,7 +163,7 @@ namespace EasyIpSwitch
             _content.BackColor = Theme.Bg;
             _content.Padding = Padding.Empty;
 
-            _tabs.Items = new string[] { L.T("Cartes réseau"), L.T("Test de ping") };
+            _tabs.Items = new string[] { L.T("Cartes réseau"), L.T("Test de ping"), L.T("Scan réseaux") };
             _tabs.SelectedIndexChanged += delegate { UpdateTab(); };
             _content.Controls.Add(_tabs);
 
@@ -201,20 +202,29 @@ namespace EasyIpSwitch
 
             _pingView.Visible = false;
             _content.Controls.Add(_pingView);
+
+            _scanView.Visible = false;
+            _content.Controls.Add(_scanView);
         }
 
         private void UpdateTab()
         {
-            bool cards = _tabs.SelectedIndex == 0;
+            int index = _tabs.SelectedIndex;
+            bool cards = index == 0;
             _cardsHost.Visible = cards;
-            _pingView.Visible = !cards;
+            _pingView.Visible = index == 1;
+            _scanView.Visible = index == 2;
             if (cards)
             {
                 LayoutCards();
             }
-            else
+            else if (index == 1)
             {
                 _pingView.Focus();
+            }
+            else
+            {
+                _scanView.Focus();
             }
         }
 
@@ -247,7 +257,7 @@ namespace EasyIpSwitch
             _btnConnections.Text = L.T("Connexions réseau");
             _btnConnections.AccessibleName = L.T("Connexions réseau");
             _btnConnections.AccessibleDescription = L.T("Ouvre les Connexions réseau Windows et crée un raccourci sur le Bureau.");
-            _tabs.Items = new string[] { L.T("Cartes réseau"), L.T("Test de ping") };
+            _tabs.Items = new string[] { L.T("Cartes réseau"), L.T("Test de ping"), L.T("Scan réseaux") };
             _lnkDonate.Text = L.T("Faire un don");
             _lblCopyright.Text = AppInfo.CopyrightLine;
             int start = _lblCopyright.Text.IndexOf("Angeli Visions", StringComparison.Ordinal);
@@ -260,12 +270,14 @@ namespace EasyIpSwitch
             _tip.SetToolTip(_btnConnections, L.T("Ouvre les Connexions réseau Windows et crée leur raccourci sur le Bureau."));
             _tip.SetToolTip(_languageSelector, L.T("Changer la langue de l'application"));
             _tip.SetToolTip(_themeToggle, L.T("Mode clair ou sombre"));
+            _tip.SetToolTip(_lnkSite, AppInfo.LandingPageUrl);
 
             for (int i = 0; i < _order.Count; i++)
             {
                 _order[i].ApplyLanguage();
             }
             _pingView.ApplyLanguage();
+            _scanView.ApplyLanguage();
             UpdateAdminBadge();
 
             if (_order.Count == 0)
@@ -283,6 +295,7 @@ namespace EasyIpSwitch
             _header.Invalidate();
             _footer.Invalidate();
             _credits.Invalidate();
+            LayoutChrome();
             Invalidate(true);
         }
 
@@ -349,7 +362,8 @@ namespace EasyIpSwitch
             _lnkSite.BackColor = Theme.Surface;
             _lnkSite.UseMnemonic = false;
             _lnkSite.Text = "angelivisions.com";
-            _lnkSite.LinkClicked += delegate { OpenUrl(AppInfo.WebsiteUrl); };
+            _lnkSite.LinkClicked += delegate { OpenUrl(AppInfo.LandingPageUrl); };
+            _tip.SetToolTip(_lnkSite, AppInfo.LandingPageUrl);
             _credits.Controls.Add(_lnkSite);
 
             _lblSeparator.AutoSize = false;
@@ -558,7 +572,7 @@ namespace EasyIpSwitch
             if (dirty == 0)
             {
                 message = L.T("Aucune modification n'est en attente.") + "\r\n\r\n"
-                    + L.T("Merci d'utiliser Easy IP-Switch. Avant de fermer, vous pouvez soutenir le projet : scannez le QR code ou ouvrez la page de don.");
+                    + L.T("Merci d'utiliser AV IP-Switch. Avant de fermer, vous pouvez soutenir le projet : scannez le QR code ou ouvrez la page de don.");
                 primaryText = L.T("Quitter");
                 secondaryText = null;
             }
@@ -573,7 +587,7 @@ namespace EasyIpSwitch
                 secondaryText = L.T("Quitter sans appliquer");
             }
 
-            int choice = QuitDialog.Show(this, L.T("Quitter Easy IP-Switch ?"), message,
+            int choice = QuitDialog.Show(this, L.T("Quitter AV IP-Switch ?"), message,
                 primaryText, secondaryText, L.T("Rester"));
 
             if (choice == QuitDialog.ChoiceStay)
@@ -669,6 +683,7 @@ namespace EasyIpSwitch
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             Theme.Changed -= ThemeChangedHandler;
+            _scanView.Stop();
             if (_refreshTimer != null)
             {
                 _refreshTimer.Stop();
@@ -711,14 +726,18 @@ namespace EasyIpSwitch
                 _themeToggle.Left - Theme.S(10) - Theme.S(82),
                 Theme.S(21), Theme.S(82), Theme.S(34));
 
-            _tabs.SetBounds(pad, Theme.S(12), Math.Max(Theme.S(240), Theme.S(360)), Theme.S(40));
             _btnConnections.SetBounds(_content.Width - pad - Theme.S(190), Theme.S(15), Theme.S(190), Theme.S(34));
+            _tabs.SetBounds(pad, Theme.S(12),
+                Math.Min(Math.Max(Theme.S(240), _tabs.PreferredWidth),
+                    Math.Max(Theme.S(240), _btnConnections.Left - pad - Theme.S(8))),
+                Theme.S(40));
 
             int viewsTop = Theme.S(56);
             int viewsHeight = Math.Max(Theme.S(120), _content.Height - viewsTop - Theme.S(4));
             int viewsWidth = Math.Max(Theme.S(320), _content.Width - pad * 2);
             _cardsHost.SetBounds(pad, viewsTop, viewsWidth, viewsHeight);
             _pingView.SetBounds(pad, viewsTop, viewsWidth, viewsHeight);
+            _scanView.SetBounds(pad, viewsTop, viewsWidth, viewsHeight);
 
             int textWidth = Math.Max(Theme.S(220), _footer.ClientSize.Width - pad * 2);
             _lblStatus.SetBounds(pad, Theme.S(8), textWidth, Theme.S(22));
@@ -835,14 +854,14 @@ namespace EasyIpSwitch
                 _pillAdmin.Text = L.T("Administrateur");
                 _pillAdmin.SetColors(Theme.SuccessSoft, Theme.Success);
                 _pillAdmin.Cursor = Cursors.Default;
-                _tip.SetToolTip(_pillAdmin, L.T("Easy IP-Switch dispose des droits administrateur."));
+                _tip.SetToolTip(_pillAdmin, L.T("AV IP-Switch dispose des droits administrateur."));
             }
             else
             {
                 _pillAdmin.Text = L.T("Droits limités");
                 _pillAdmin.SetColors(Theme.WarningSoft, Theme.Warning);
                 _pillAdmin.Cursor = Cursors.Hand;
-                _tip.SetToolTip(_pillAdmin, L.T("Cliquez ici pour relancer Easy IP-Switch avec les droits administrateur."));
+                _tip.SetToolTip(_pillAdmin, L.T("Cliquez ici pour relancer AV IP-Switch avec les droits administrateur."));
             }
             _pillAdmin.AutoFit();
             _pillAdmin.Visible = true;
@@ -856,7 +875,7 @@ namespace EasyIpSwitch
                 return;
             }
 
-            string message = L.T("Windows n'a pas accordé les droits administrateur à cette session de l'application.\n\nSans ces droits, les changements d'adresse IP et l'activation des cartes sont bloqués.\n\nSouhaitez-vous relancer Easy IP-Switch en tant qu'administrateur ?");
+            string message = L.T("Windows n'a pas accordé les droits administrateur à cette session de l'application.\n\nSans ces droits, les changements d'adresse IP et l'activation des cartes sont bloqués.\n\nSouhaitez-vous relancer AV IP-Switch en tant qu'administrateur ?");
 
             if (CountDirty() > 0)
             {
@@ -1067,6 +1086,7 @@ namespace EasyIpSwitch
             }
 
             _pingView.SetAdapters(adapters);
+            _scanView.SetAdapters(adapters);
             ResolvePendingToggles(adapters);
         }
 

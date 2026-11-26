@@ -164,7 +164,7 @@ namespace EasyIpSwitch
 
                     if (temp == null)
                     {
-                        string reserved = Path.Combine(desktop, ".EasyIpSwitch-" + Guid.NewGuid().ToString("N") + ".lnk");
+                        string reserved = Path.Combine(desktop, ".AvIpSwitch-" + Guid.NewGuid().ToString("N") + ".lnk");
                         // Ne jamais supprimer un fichier que CreateNew n'a pas créé.
                         using (FileStream reservation = new FileStream(reserved, FileMode.CreateNew, FileAccess.Write, FileShare.None))
                         {
@@ -224,9 +224,9 @@ namespace EasyIpSwitch
             }
             if (index == 1)
             {
-                return baseName + " - Easy IP-Switch.lnk";
+                return baseName + " - AV IP-Switch.lnk";
             }
-            return baseName + " - Easy IP-Switch (" + index + ").lnk";
+            return baseName + " - AV IP-Switch (" + index + ").lnk";
         }
 
         private static NetworkConnectionsShortcutResult Result(string path, bool created, Action<string, bool> notify)

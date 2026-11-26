@@ -1,6 +1,6 @@
-Easy IP-Switch {{VERSION}} — Windows
+AV IP-Switch {{VERSION}} — Windows
 Angeli Visions
-https://angelivisions.com/easy-ip-switch
+https://angelivisions.com/fr/av-ip-switch
 
 Contenu / Contents / Inhalt / Contenido:
 - {{EXE_NAME}}
@@ -30,8 +30,8 @@ Get-FileHash .\{{EXE_NAME}} -Algorithm SHA256
 Get-AuthenticodeSignature .\{{EXE_NAME}} | Format-List Status, SignerCertificate
 
 Téléchargez uniquement depuis :
-- https://angelivisions.com/easy-ip-switch
-- https://github.com/danijay75/easy-ip-switch/releases/tag/v{{VERSION}}
+- https://angelivisions.com/fr/av-ip-switch
+- https://github.com/danijay75/av-ip-switch/releases/tag/v{{VERSION}}
 
 Ne lancez jamais une copie provenant d'un autre site sans vérifier son
 empreinte. Le paquet est distribué sous licence MIT, sans garantie.
@@ -57,8 +57,8 @@ Get-FileHash .\{{EXE_NAME}} -Algorithm SHA256
 Get-AuthenticodeSignature .\{{EXE_NAME}} | Format-List Status, SignerCertificate
 
 Download only from:
-- https://angelivisions.com/easy-ip-switch
-- https://github.com/danijay75/easy-ip-switch/releases/tag/v{{VERSION}}
+- https://angelivisions.com/en/av-ip-switch
+- https://github.com/danijay75/av-ip-switch/releases/tag/v{{VERSION}}
 
 Never run a copy from another site without verifying its hash. This
 package is distributed under the MIT license, without warranty.
@@ -85,8 +85,8 @@ Get-FileHash .\{{EXE_NAME}} -Algorithm SHA256
 Get-AuthenticodeSignature .\{{EXE_NAME}} | Format-List Status, SignerCertificate
 
 Nur hier herunterladen:
-- https://angelivisions.com/easy-ip-switch
-- https://github.com/danijay75/easy-ip-switch/releases/tag/v{{VERSION}}
+- https://angelivisions.com/de/av-ip-switch
+- https://github.com/danijay75/av-ip-switch/releases/tag/v{{VERSION}}
 
 Führen Sie niemals eine Kopie von einer anderen Website aus, ohne den
 Hash zu prüfen. Dieses Paket wird unter der MIT-Lizenz ohne Gewähr
@@ -113,8 +113,8 @@ Get-FileHash .\{{EXE_NAME}} -Algorithm SHA256
 Get-AuthenticodeSignature .\{{EXE_NAME}} | Format-List Status, SignerCertificate
 
 Descarga solo desde:
-- https://angelivisions.com/easy-ip-switch
-- https://github.com/danijay75/easy-ip-switch/releases/tag/v{{VERSION}}
+- https://angelivisions.com/es/av-ip-switch
+- https://github.com/danijay75/av-ip-switch/releases/tag/v{{VERSION}}
 
 No ejecutes nunca una copia de otro sitio sin verificar su huella. Este
 paquete se distribuye bajo la licencia MIT, sin garantía.

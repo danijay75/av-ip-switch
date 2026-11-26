@@ -64,6 +64,19 @@ namespace EasyIpSwitch
             }
         }
 
+        public int PreferredWidth
+        {
+            get
+            {
+                int width = 0;
+                for (int i = 0; i < _items.Length; i++)
+                {
+                    width += TabWidth(_items[i]);
+                }
+                return width;
+            }
+        }
+
         public void ApplyTheme()
         {
             BackColor = Theme.Bg;

@@ -12,6 +12,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 
 $root = $PSScriptRoot
 if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
@@ -35,8 +36,8 @@ if (-not (Test-Path -LiteralPath $TemplatePath -PathType Leaf)) {
 }
 
 $sha256 = (Get-FileHash -LiteralPath $exeItem.FullName -Algorithm SHA256).Hash
-$exeName = "easy-ip-switch-$Version-windows.exe"
-$zipName = "easy-ip-switch-$Version-windows.zip"
+$exeName = "av-ip-switch-$Version-windows.exe"
+$zipName = "av-ip-switch-$Version-windows.zip"
 
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 $outputExe = Join-Path $OutputDirectory $exeName
@@ -50,8 +51,8 @@ if ([IO.Path]::GetFullPath($exeItem.FullName) -ne [IO.Path]::GetFullPath($output
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $readme = $template.Replace('{{VERSION}}', $Version).Replace('{{EXE_NAME}}', $exeName).Replace('{{SHA256}}', $sha256)
 
-$stagingRoot = Join-Path ([IO.Path]::GetTempPath()) ('EasyIpSwitchPackage-' + [Guid]::NewGuid().ToString('N'))
-$packageDir = Join-Path $stagingRoot ("easy-ip-switch-$Version-windows")
+$stagingRoot = Join-Path ([IO.Path]::GetTempPath()) ('AvIpSwitchPackage-' + [Guid]::NewGuid().ToString('N'))
+$packageDir = Join-Path $stagingRoot ("av-ip-switch-$Version-windows")
 
 try {
     New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
@@ -69,7 +70,8 @@ try {
     if (Test-Path -LiteralPath $zipPath) {
         Remove-Item -LiteralPath $zipPath -Force
     }
-    Compress-Archive -Path $packageDir -DestinationPath $zipPath -CompressionLevel Optimal
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($packageDir, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $true)
 }
 finally {
     Remove-Item -LiteralPath $stagingRoot -Recurse -Force -ErrorAction SilentlyContinue

@@ -1,4 +1,4 @@
-# Signature Windows — Easy IP-Switch
+# Signature Windows — AV IP-Switch
 
 ## État actuel
 
@@ -59,7 +59,7 @@ partir de l'exemple
 {
   "Endpoint": "https://weu.codesigning.azure.net/",
   "CodeSigningAccountName": "votre-compte-artifact-signing",
-  "CertificateProfileName": "easy-ip-switch",
+  "CertificateProfileName": "av-ip-switch",
   "ExcludeCredentials": []
 }
 ```
@@ -80,15 +80,15 @@ az login
   -AzureDlib "C:\outils\Azure.CodeSigning.Dlib.dll" `
   -AzureMetadata ".\packaging\windows\artifact-signing-metadata.json" `
   -Package `
-  -WebsiteDirectory "C:\Users\danij\Projets IA\angeli-visions-website\public\downloads\easy-ip-switch" `
-  -WebsiteReleaseJson "C:\Users\danij\Projets IA\angeli-visions-website\app\easy-ip-switch\release.json"
+  -WebsiteDirectory "C:\Users\danij\Projets IA\angeli-visions-website\public\downloads\av-ip-switch" `
+  -WebsiteReleaseJson "C:\Users\danij\Projets IA\angeli-visions-website\app\av-ip-switch-page\release.json"
 ```
 
 Ou signer un binaire déjà compilé :
 
 ```powershell
 .\sign.ps1 `
-  -Path ".\dist\easy ip-switch v1.1.3.exe" `
+  -Path ".\dist\AV IP-Switch v1.2.1.exe" `
   -Mode Azure `
   -AzureDlib "C:\outils\Azure.CodeSigning.Dlib.dll" `
   -AzureMetadata ".\packaging\windows\artifact-signing-metadata.json"
@@ -97,8 +97,8 @@ Ou signer un binaire déjà compilé :
 Vérification manuelle :
 
 ```powershell
-signtool verify /pa /v ".\dist\easy ip-switch v1.1.3.exe"
-Get-AuthenticodeSignature ".\dist\easy ip-switch v1.1.3.exe" |
+signtool verify /pa /v ".\dist\AV IP-Switch v1.2.1.exe"
+Get-AuthenticodeSignature ".\dist\AV IP-Switch v1.2.1.exe" |
   Format-List Status, StatusMessage, SignerCertificate
 ```
 
@@ -143,8 +143,8 @@ et tous ses hashes, sans créer une 1.1.4.
 4. Remplacer l'asset Windows de la release GitHub `v1.1.3` par le nouvel
    exécutable signé, et ajouter le ZIP et `SHA256SUMS.txt`.
 5. Copier l'exécutable signé et `SHA256SUMS.txt` dans
-   `public/downloads/easy-ip-switch/`.
-6. Mettre à jour `app/easy-ip-switch/release.json` (le script le fait avec
+   `public/downloads/av-ip-switch/`.
+6. Mettre à jour `app/av-ip-switch-page/release.json` (le script le fait avec
    `-WebsiteReleaseJson`).
 7. Mettre à jour la section « Avertissement Windows » du site : une fois
    le binaire signé, elle doit indiquer l'éditeur **Angeli Visions** et ne

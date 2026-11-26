@@ -59,7 +59,7 @@ namespace EasyIpSwitch
                     ? L.T("Exception inconnue")
                     : ex.GetType().FullName + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace;
                 System.IO.File.AppendAllText(
-                    System.IO.Path.Combine(System.IO.Path.GetTempPath(), "EasyIpSwitch-erreurs.log"),
+                    System.IO.Path.Combine(System.IO.Path.GetTempPath(), "AvIpSwitch-erreurs.log"),
                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + details + Environment.NewLine + Environment.NewLine);
             }
             catch

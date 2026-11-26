@@ -18,6 +18,7 @@ namespace EasyIpSwitch
                 MainFormFollowsLanguage();
                 AdapterCardFollowsLanguage();
                 PingViewFollowsLanguage();
+                ScanViewFollowsLanguage();
             }
             finally
             {
@@ -103,7 +104,10 @@ namespace EasyIpSwitch
                 Assert(Field<FlatButton>(form, "_btnConnections").Text == "Network connections",
                     "The connections button must switch language.");
                 TabBar tabs = Field<TabBar>(form, "_tabs");
-                Assert(tabs.Items.Length == 2 && tabs.Items[0] == "Network cards" && tabs.Items[1] == "Ping test",
+                Assert(tabs.Items.Length == 3
+                    && tabs.Items[0] == "Network cards"
+                    && tabs.Items[1] == "Ping test"
+                    && tabs.Items[2] == "Network scan",
                     "The tabs must switch language.");
                 Assert(Field<LinkLabel>(form, "_lnkDonate").Text == "Donate",
                     "The donation link must switch language.");
@@ -165,6 +169,48 @@ namespace EasyIpSwitch
                     "The ping source label must switch language.");
                 Assert(Field<FlatButton>(view, "_btnClear").Text == "Borrar",
                     "The clear button must switch language.");
+            }
+        }
+
+        private static void ScanViewFollowsLanguage()
+        {
+            L.SetLanguage(AppLanguage.French, false);
+            using (ScanView view = new ScanView())
+            {
+                view.SetBounds(0, 0, 900, 600);
+                ListView table = Field<ListView>(view, "_table");
+                FlatButton stop = Field<FlatButton>(view, "_btnStop");
+                string[] expectedColumns = new string[]
+                {
+                    "Nom", "Adresse IP", "DHCP", "Serveur DHCP",
+                    "Pare-feu", "Agent", "Système", "Dernière réponse"
+                };
+                Assert(table.Columns.Count == expectedColumns.Length,
+                    "The scan table must contain exactly eight columns.");
+                Assert(!table.OwnerDraw,
+                    "The scan table must use native drawing to avoid hover repaint glitches.");
+                Assert(stop.Right <= view.ClientSize.Width - Theme.S(24),
+                    "The scan controls must stay within the card after removing CSV export.");
+                for (int i = 0; i < expectedColumns.Length; i++)
+                {
+                    Assert(table.Columns[i].Text == expectedColumns[i],
+                        "The scan table columns must use the approved order.");
+                }
+
+                L.SetLanguage(AppLanguage.Spanish, false);
+                view.ApplyLanguage();
+
+                Assert(Field<Label>(view, "_title").Text == "Escanear la red local",
+                    "The scan title must switch language.");
+                Assert(Field<Label>(view, "_lblRange").Text == "Rango a escanear",
+                    "The scan range label must switch language.");
+                Assert(Field<FlatButton>(view, "_btnScan").Text == "Escanear",
+                    "The scan button must switch language.");
+                Assert(Field<FlatButton>(view, "_btnStop").Text == "Detener",
+                    "The stop button must switch language.");
+                Assert(table.Columns[0].Text == "Nombre"
+                    && table.Columns[7].Text == "Última respuesta",
+                    "The scan table headers must switch language.");
             }
         }
 

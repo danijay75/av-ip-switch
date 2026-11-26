@@ -14,7 +14,7 @@ namespace EasyIpSwitch
 
     internal sealed class RegistryTermsConsentStore : ITermsConsentStore
     {
-        public const string DefaultRegistryPath = @"Software\Angeli Visions\Easy IP-Switch";
+        public const string DefaultRegistryPath = @"Software\Angeli Visions\AV IP-Switch";
         public const string ValueName = "TermsAccepted";
 
         private readonly string _registryPath;
@@ -38,7 +38,7 @@ namespace EasyIpSwitch
                 string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 if (!string.IsNullOrEmpty(localAppData))
                 {
-                    return Path.Combine(Path.Combine(localAppData, "Angeli Visions"), @"Easy IP-Switch\terms-accepted.txt");
+                    return Path.Combine(Path.Combine(localAppData, "Angeli Visions"), @"AV IP-Switch\terms-accepted.txt");
                 }
             }
             catch
@@ -191,11 +191,11 @@ namespace EasyIpSwitch
 
         internal const string FrenchAgreementKey =
             "1. Objet et licence (MIT)\r\n"
-            + "Easy IP-Switch, édité par Angeli Visions, permet de consulter et de modifier localement la configuration IPv4 des cartes réseau Windows (DHCP, adresse fixe, masque, passerelle, activation) et d'effectuer des tests de ping.\r\n\r\n"
+            + "AV IP-Switch, édité par Angeli Visions, permet de consulter et de modifier localement la configuration IPv4 des cartes réseau Windows (DHCP, adresse fixe, masque, passerelle, activation) et d'effectuer des tests de ping.\r\n\r\n"
             + "2. Responsabilité d'utilisation\r\n"
             + "L'application modifie directement les paramètres réseau de ce poste. Vous êtes seul responsable des configurations appliquées ; des réglages inadaptés peuvent interrompre votre accès au réseau ou à Internet. Le logiciel est fourni « en l'état », sans garantie.\r\n\r\n"
             + "3. Protection des données et respect du RGPD (UE 2016/679)\r\n"
-            + "• Aucune collecte : Easy IP-Switch fonctionne 100 % en local. Aucune donnée personnelle, adresse IP ou télémétrie n'est collectée ni transmise à Angeli Visions ou à un tiers.\r\n"
+            + "• Aucune collecte : AV IP-Switch fonctionne 100 % en local. Aucune donnée personnelle, adresse IP ou télémétrie n'est collectée ni transmise à Angeli Visions ou à un tiers.\r\n"
             + "• Stockage local uniquement : seuls la langue choisie et votre accord sont enregistrés dans votre session Windows locale, ainsi qu'un journal local en cas d'erreur technique.\r\n"
             + "• Liens externes : le site officiel et la page de don PayPal ne s'ouvrent que sur clic explicite de votre part.\r\n\r\n"
             + "4. Votre choix\r\n"
@@ -364,7 +364,7 @@ namespace EasyIpSwitch
 
             Text = AppInfo.ProductName + " " + AppInfo.VersionLabel;
             _lblTitle.Text = L.T("Conditions d'utilisation et RGPD");
-            _lblIntro.Text = L.T("Veuillez lire et accepter les présentes conditions pour utiliser Easy IP-Switch.");
+            _lblIntro.Text = L.T("Veuillez lire et accepter les présentes conditions pour utiliser AV IP-Switch.");
             _lblAgreement.Text = AgreementText();
             _lblPrivacyNote.Text = L.T("100 % local · Aucune donnée personnelle collectée");
             _btnDecline.Text = L.T("Je refuse");

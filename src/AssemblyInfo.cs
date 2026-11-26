@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Easy IP-Switch")]
+[assembly: AssemblyTitle("AV IP-Switch")]
 [assembly: AssemblyDescription("Changement rapide de la configuration IP d'une carte réseau")]
-[assembly: AssemblyProduct("Easy IP-Switch")]
+[assembly: AssemblyProduct("AV IP-Switch")]
 [assembly: AssemblyCompany("Angeli Visions")]
 [assembly: AssemblyCopyright("© Angeli Visions. Tous droits réservés.")]
-[assembly: AssemblyVersion("1.1.3.0")]
-[assembly: AssemblyFileVersion("1.1.3.0")]
+[assembly: AssemblyVersion("1.2.1.0")]
+[assembly: AssemblyFileVersion("1.2.1.0")]
 [assembly: ComVisible(false)]

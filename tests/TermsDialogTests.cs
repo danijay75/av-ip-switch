@@ -60,8 +60,9 @@ namespace EasyIpSwitch
                     "The dialog title must mention GDPR (RGPD).");
                 Assert(agreement.Text.IndexOf("RGPD", StringComparison.Ordinal) >= 0
                     && agreement.Text.IndexOf("2016/679", StringComparison.Ordinal) >= 0
-                    && agreement.Text.IndexOf("MIT", StringComparison.Ordinal) >= 0,
-                    "The agreement text must cover the Terms of Use and GDPR compliance.");
+                    && agreement.Text.IndexOf("MIT", StringComparison.Ordinal) >= 0
+                    && agreement.Text.IndexOf("AV IP-Switch", StringComparison.Ordinal) >= 0,
+                    "The agreement text must cover AV IP-Switch, Terms of Use and GDPR compliance.");
 
                 Assert(accept.Parent == dialog && accept.Enabled && accept.Text == "J'accepte",
                     "The accept button must be immediately clickable in a single click.");
@@ -194,7 +195,8 @@ namespace EasyIpSwitch
                     "The title must switch to English.");
                 Assert(accept.Text == "I accept" && decline.Text == "I decline",
                     "The buttons must switch to English.");
-                Assert(Field<Label>(dialog, "_lblAgreement").Text.IndexOf("GDPR compliance", StringComparison.Ordinal) >= 0,
+                Assert(Field<Label>(dialog, "_lblAgreement").Text.IndexOf("GDPR compliance", StringComparison.Ordinal) >= 0
+                    && Field<Label>(dialog, "_lblAgreement").Text.IndexOf("AV IP-Switch", StringComparison.Ordinal) >= 0,
                     "The agreement body must switch to English.");
                 Assert(Math.Max(0, scrollPanel.AutoScrollMinSize.Height - scrollPanel.Height) <= Theme.S(160)
                     && privacyNote.Right <= decline.Left,
@@ -206,6 +208,8 @@ namespace EasyIpSwitch
                     "The title must switch to German.");
                 Assert(accept.Text == "Ich akzeptiere" && decline.Text == "Ich lehne ab",
                     "The buttons must switch to German.");
+                Assert(Field<Label>(dialog, "_lblAgreement").Text.IndexOf("AV IP-Switch", StringComparison.Ordinal) >= 0,
+                    "The German agreement body must mention AV IP-Switch.");
                 Assert(Math.Max(0, scrollPanel.AutoScrollMinSize.Height - scrollPanel.Height) <= Theme.S(160)
                     && privacyNote.Right <= decline.Left,
                     "German layout must keep a short scroll and non-overlapping footer.");
@@ -216,6 +220,8 @@ namespace EasyIpSwitch
                     "The title must switch to Spanish.");
                 Assert(accept.Text == "Acepto" && decline.Text == "Rechazo",
                     "The buttons must switch to Spanish.");
+                Assert(Field<Label>(dialog, "_lblAgreement").Text.IndexOf("AV IP-Switch", StringComparison.Ordinal) >= 0,
+                    "The Spanish agreement body must mention AV IP-Switch.");
                 Assert(Math.Max(0, scrollPanel.AutoScrollMinSize.Height - scrollPanel.Height) <= Theme.S(160)
                     && privacyNote.Right <= decline.Left,
                     "Spanish layout must keep a short scroll and non-overlapping footer.");

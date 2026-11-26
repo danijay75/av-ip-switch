@@ -76,7 +76,7 @@ namespace EasyIpSwitch
         {
             string directory = TestDirectory();
             string original = Path.Combine(directory, "Connexions réseau.lnk");
-            string alternative = Path.Combine(directory, "Connexions réseau - Easy IP-Switch.lnk");
+            string alternative = Path.Combine(directory, "Connexions réseau - AV IP-Switch.lnk");
             const string content = "Existing user file; do not replace.";
             try
             {

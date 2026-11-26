@@ -40,8 +40,9 @@ namespace EasyIpSwitch
                 int localizationAssertions = LocalizationTests.Run();
                 int versionAssertions = HeaderVersionTests.Run();
                 int termsAssertions = TermsDialogTests.Run();
+                int scanRangeAssertions = ScanRangeTests.Run();
 
-                Console.WriteLine("Easy IP-Switch tests passed ({0} assertions).", _assertions + controlAssertions + integrationAssertions + staticAssertions + staticOperationAssertions + shortcutAssertions + dialogAssertions + quitAssertions + localizationAssertions + versionAssertions + termsAssertions);
+                Console.WriteLine("AV IP-Switch tests passed ({0} assertions).", _assertions + controlAssertions + integrationAssertions + staticAssertions + staticOperationAssertions + shortcutAssertions + dialogAssertions + quitAssertions + localizationAssertions + versionAssertions + termsAssertions + scanRangeAssertions);
                 return 0;
             }
             catch (Exception ex)

@@ -19,7 +19,8 @@ namespace EasyIpSwitch
     /// </summary>
     internal static class L
     {
-        private const string RegistryPath = @"Software\Angeli Visions\Easy IP-Switch";
+        private const string RegistryPath = @"Software\Angeli Visions\AV IP-Switch";
+        private const string LegacyRegistryPath = @"Software\Angeli Visions\Easy IP-Switch";
         private const string RegistryValue = "Language";
 
         private static AppLanguage _current = AppLanguage.French;
@@ -94,22 +95,27 @@ namespace EasyIpSwitch
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
+                string code = ReadLanguageCode(RegistryPath) ?? ReadLanguageCode(LegacyRegistryPath);
+                if (!string.IsNullOrEmpty(code))
                 {
-                    if (key != null)
-                    {
-                        object value = key.GetValue(RegistryValue);
-                        string code = value as string;
-                        if (!string.IsNullOrEmpty(code))
-                        {
-                            _current = Parse(code);
-                        }
-                    }
+                    _current = Parse(code);
                 }
             }
             catch
             {
                 _current = AppLanguage.French;
+            }
+        }
+
+        private static string ReadLanguageCode(string registryPath)
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(registryPath))
+            {
+                if (key == null)
+                {
+                    return null;
+                }
+                return key.GetValue(RegistryValue) as string;
             }
         }
 
@@ -203,7 +209,7 @@ namespace EasyIpSwitch
             Add("Tester", "Test", "Testen", "Probar");
             Add("Rester", "Stay", "Bleiben", "Quedarse");
             Add("Quitter", "Quit", "Beenden", "Salir");
-            Add("Quitter Easy IP-Switch ?", "Quit Easy IP-Switch?", "Easy IP-Switch beenden?", "¿Salir de Easy IP-Switch?");
+            Add("Quitter AV IP-Switch ?", "Quit AV IP-Switch?", "AV IP-Switch beenden?", "¿Salir de AV IP-Switch?");
             Add("Appliquer et quitter", "Apply and quit", "Übernehmen und beenden", "Aplicar y salir");
             Add("Quitter sans appliquer", "Quit without applying", "Beenden ohne Übernehmen", "Salir sin aplicar");
             Add("Langue", "Language", "Sprache", "Idioma");
@@ -211,7 +217,7 @@ namespace EasyIpSwitch
             Add("Administrateur", "Administrator", "Administrator", "Administrador");
             Add("Droits limités", "Limited rights", "Eingeschränkte Rechte", "Permisos limitados");
             Add("Mode clair ou sombre", "Light or dark mode", "Heller oder dunkler Modus", "Modo claro u oscuro");
-            Add("Soutenir Easy IP-Switch", "Support Easy IP-Switch", "Easy IP-Switch unterstützen", "Apoyar Easy IP-Switch");
+            Add("Soutenir AV IP-Switch", "Support AV IP-Switch", "AV IP-Switch unterstützen", "Apoyar AV IP-Switch");
             Add("Scannez ce QR code ou cliquez dessus pour faire un don via PayPal.",
                 "Scan this QR code or click it to donate via PayPal.",
                 "Scannen Sie diesen QR-Code oder klicken Sie darauf, um über PayPal zu spenden.",
@@ -237,18 +243,18 @@ namespace EasyIpSwitch
                 "Update the network card list and status (F5)",
                 "Liste und Status der Netzwerkkarten aktualisieren (F5)",
                 "Actualizar la lista y el estado de las tarjetas de red (F5)");
-            Add("Cliquez pour relancer Easy IP-Switch avec les droits administrateur",
-                "Click to restart Easy IP-Switch as administrator",
-                "Klicken Sie, um Easy IP-Switch als Administrator neu zu starten",
-                "Haga clic para reiniciar Easy IP-Switch como administrador");
-            Add("Easy IP-Switch dispose des droits administrateur.",
-                "Easy IP-Switch has administrator rights.",
-                "Easy IP-Switch verfügt über Administratorrechte.",
-                "Easy IP-Switch tiene permisos de administrador.");
-            Add("Cliquez ici pour relancer Easy IP-Switch avec les droits administrateur.",
-                "Click here to restart Easy IP-Switch as administrator.",
-                "Klicken Sie hier, um Easy IP-Switch als Administrator neu zu starten.",
-                "Haga clic aquí para reiniciar Easy IP-Switch como administrador.");
+            Add("Cliquez pour relancer AV IP-Switch avec les droits administrateur",
+                "Click to restart AV IP-Switch as administrator",
+                "Klicken Sie, um AV IP-Switch als Administrator neu zu starten",
+                "Haga clic para reiniciar AV IP-Switch como administrador");
+            Add("AV IP-Switch dispose des droits administrateur.",
+                "AV IP-Switch has administrator rights.",
+                "AV IP-Switch verfügt über Administratorrechte.",
+                "AV IP-Switch tiene permisos de administrador.");
+            Add("Cliquez ici pour relancer AV IP-Switch avec les droits administrateur.",
+                "Click here to restart AV IP-Switch as administrator.",
+                "Klicken Sie hier, um AV IP-Switch als Administrator neu zu starten.",
+                "Haga clic aquí para reiniciar AV IP-Switch como administrador.");
             Add("Ouvre les Connexions réseau Windows et crée un raccourci sur le Bureau.",
                 "Opens Windows Network Connections and creates a desktop shortcut.",
                 "Öffnet die Windows-Netzwerkverbindungen und erstellt eine Desktop-Verknüpfung.",
@@ -274,10 +280,10 @@ namespace EasyIpSwitch
                 "No changes are pending.",
                 "Keine Änderungen ausstehend.",
                 "No hay cambios pendientes.");
-            Add("Merci d'utiliser Easy IP-Switch. Avant de fermer, vous pouvez soutenir le projet : scannez le QR code ou ouvrez la page de don.",
-                "Thank you for using Easy IP-Switch. Before closing, you can support the project: scan the QR code or open the donation page.",
-                "Danke, dass Sie Easy IP-Switch verwenden. Vor dem Schließen können Sie das Projekt unterstützen: Scannen Sie den QR-Code oder öffnen Sie die Spendenseite.",
-                "Gracias por usar Easy IP-Switch. Antes de cerrar, puede apoyar el proyecto: escanee el código QR o abra la página de donación.");
+            Add("Merci d'utiliser AV IP-Switch. Avant de fermer, vous pouvez soutenir le projet : scannez le QR code ou ouvrez la page de don.",
+                "Thank you for using AV IP-Switch. Before closing, you can support the project: scan the QR code or open the donation page.",
+                "Danke, dass Sie AV IP-Switch verwenden. Vor dem Schließen können Sie das Projekt unterstützen: Scannen Sie den QR-Code oder öffnen Sie die Spendenseite.",
+                "Gracias por usar AV IP-Switch. Antes de cerrar, puede apoyar el proyecto: escanee el código QR o abra la página de donación.");
             Add("Une carte réseau a été modifiée mais la nouvelle configuration n'a pas encore été appliquée.",
                 "A network card was changed but the new configuration has not been applied yet.",
                 "Eine Netzwerkkarte wurde geändert, aber die neue Konfiguration wurde noch nicht übernommen.",
@@ -441,10 +447,10 @@ namespace EasyIpSwitch
                 "No se pudo cambiar el estado de la tarjeta.");
             Add("Droits administrateur requis", "Administrator rights required", "Administratorrechte erforderlich", "Se requieren permisos de administrador");
             Add("Relancer en administrateur", "Restart as administrator", "Als Administrator neu starten", "Reiniciar como administrador");
-            Add("Windows n'a pas accordé les droits administrateur à cette session de l'application.\n\nSans ces droits, les changements d'adresse IP et l'activation des cartes sont bloqués.\n\nSouhaitez-vous relancer Easy IP-Switch en tant qu'administrateur ?",
-                "Windows did not grant administrator rights to this application session.\n\nWithout these rights, IP address changes and card activation are blocked.\n\nDo you want to restart Easy IP-Switch as administrator?",
-                "Windows hat dieser Anwendungssitzung keine Administratorrechte erteilt.\n\nOhne diese Rechte sind Änderungen der IP-Adresse und die Aktivierung von Karten blockiert.\n\nMöchten Sie Easy IP-Switch als Administrator neu starten?",
-                "Windows no concedió permisos de administrador a esta sesión de la aplicación.\n\nSin estos permisos, los cambios de dirección IP y la activación de tarjetas están bloqueados.\n\n¿Desea reiniciar Easy IP-Switch como administrador?");
+            Add("Windows n'a pas accordé les droits administrateur à cette session de l'application.\n\nSans ces droits, les changements d'adresse IP et l'activation des cartes sont bloqués.\n\nSouhaitez-vous relancer AV IP-Switch en tant qu'administrateur ?",
+                "Windows did not grant administrator rights to this application session.\n\nWithout these rights, IP address changes and card activation are blocked.\n\nDo you want to restart AV IP-Switch as administrator?",
+                "Windows hat dieser Anwendungssitzung keine Administratorrechte erteilt.\n\nOhne diese Rechte sind Änderungen der IP-Adresse und die Aktivierung von Karten blockiert.\n\nMöchten Sie AV IP-Switch als Administrator neu starten?",
+                "Windows no concedió permisos de administrador a esta sesión de la aplicación.\n\nSin estos permisos, los cambios de dirección IP y la activación de tarjetas están bloqueados.\n\n¿Desea reiniciar AV IP-Switch como administrador?");
             Add("\n\nAttention : les modifications non appliquées seront perdues.",
                 "\n\nWarning: unapplied changes will be lost.",
                 "\n\nAchtung: Nicht übernommene Änderungen gehen verloren.",
@@ -818,10 +824,10 @@ namespace EasyIpSwitch
                 "Terms of Use and GDPR",
                 "Nutzungsbedingungen und DSGVO",
                 "Condiciones de uso y RGPD");
-            Add("Veuillez lire et accepter les présentes conditions pour utiliser Easy IP-Switch.",
-                "Please read and accept these terms to use Easy IP-Switch.",
-                "Bitte lesen und akzeptieren Sie diese Bedingungen, um Easy IP-Switch zu verwenden.",
-                "Lea y acepte estas condiciones para utilizar Easy IP-Switch.");
+            Add("Veuillez lire et accepter les présentes conditions pour utiliser AV IP-Switch.",
+                "Please read and accept these terms to use AV IP-Switch.",
+                "Bitte lesen und akzeptieren Sie diese Bedingungen, um AV IP-Switch zu verwenden.",
+                "Lea y acepte estas condiciones para utilizar AV IP-Switch.");
             Add("100 % local · Aucune donnée personnelle collectée",
                 "100% local · No personal data collected",
                 "100 % lokal · Keine Erhebung personenbezogener Daten",
@@ -829,45 +835,143 @@ namespace EasyIpSwitch
             Add("J'accepte", "I accept", "Ich akzeptiere", "Acepto");
             Add("Je refuse", "I decline", "Ich lehne ab", "Rechazo");
             Add("1. Objet et licence (MIT)\r\n"
-                + "Easy IP-Switch, édité par Angeli Visions, permet de consulter et de modifier localement la configuration IPv4 des cartes réseau Windows (DHCP, adresse fixe, masque, passerelle, activation) et d'effectuer des tests de ping.\r\n\r\n"
+                + "AV IP-Switch, édité par Angeli Visions, permet de consulter et de modifier localement la configuration IPv4 des cartes réseau Windows (DHCP, adresse fixe, masque, passerelle, activation) et d'effectuer des tests de ping.\r\n\r\n"
                 + "2. Responsabilité d'utilisation\r\n"
                 + "L'application modifie directement les paramètres réseau de ce poste. Vous êtes seul responsable des configurations appliquées ; des réglages inadaptés peuvent interrompre votre accès au réseau ou à Internet. Le logiciel est fourni « en l'état », sans garantie.\r\n\r\n"
                 + "3. Protection des données et respect du RGPD (UE 2016/679)\r\n"
-                + "• Aucune collecte : Easy IP-Switch fonctionne 100 % en local. Aucune donnée personnelle, adresse IP ou télémétrie n'est collectée ni transmise à Angeli Visions ou à un tiers.\r\n"
+                + "• Aucune collecte : AV IP-Switch fonctionne 100 % en local. Aucune donnée personnelle, adresse IP ou télémétrie n'est collectée ni transmise à Angeli Visions ou à un tiers.\r\n"
                 + "• Stockage local uniquement : seuls la langue choisie et votre accord sont enregistrés dans votre session Windows locale, ainsi qu'un journal local en cas d'erreur technique.\r\n"
                 + "• Liens externes : le site officiel et la page de don PayPal ne s'ouvrent que sur clic explicite de votre part.\r\n\r\n"
                 + "4. Votre choix\r\n"
                 + "Cliquez sur « J'accepte » pour mémoriser votre accord et ouvrir l'application, ou sur « Je refuse » pour fermer l'application (votre accord vous sera redemandé au prochain lancement).",
                 "1. Purpose and license (MIT)\r\n"
-                + "Easy IP-Switch, published by Angeli Visions, lets you view and locally modify the IPv4 configuration of Windows network cards (DHCP, static address, mask, gateway, activation) and run ping tests.\r\n\r\n"
+                + "AV IP-Switch, published by Angeli Visions, lets you view and locally modify the IPv4 configuration of Windows network cards (DHCP, static address, mask, gateway, activation) and run ping tests.\r\n\r\n"
                 + "2. Responsibility of use\r\n"
                 + "The application directly modifies this computer's network settings. You are solely responsible for the configurations applied; inappropriate settings may interrupt your network or Internet access. The software is provided \"as is\", without warranty.\r\n\r\n"
                 + "3. Data protection and GDPR compliance (EU 2016/679)\r\n"
-                + "• No data collection: Easy IP-Switch operates 100% locally. No personal data, IP address or telemetry is collected or transmitted to Angeli Visions or any third party.\r\n"
+                + "• No data collection: AV IP-Switch operates 100% locally. No personal data, IP address or telemetry is collected or transmitted to Angeli Visions or any third party.\r\n"
                 + "• Local storage only: only your selected language and your consent are stored in your local Windows user session, along with a local log in case of a technical error.\r\n"
                 + "• External links: the official website and the PayPal donation page open only upon your explicit click.\r\n\r\n"
                 + "4. Your choice\r\n"
                 + "Click \"I accept\" to remember your consent and open the application, or \"I decline\" to close the application (you will be asked again at the next launch).",
                 "1. Zweck und Lizenz (MIT)\r\n"
-                + "Easy IP-Switch, herausgegeben von Angeli Visions, ermöglicht das lokale Anzeigen und Ändern der IPv4-Konfiguration von Windows-Netzwerkkarten (DHCP, feste Adresse, Maske, Gateway, Aktivierung) sowie das Ausführen von Ping-Tests.\r\n\r\n"
+                + "AV IP-Switch, herausgegeben von Angeli Visions, ermöglicht das lokale Anzeigen und Ändern der IPv4-Konfiguration von Windows-Netzwerkkarten (DHCP, feste Adresse, Maske, Gateway, Aktivierung) sowie das Ausführen von Ping-Tests.\r\n\r\n"
                 + "2. Nutzungsverantwortung\r\n"
                 + "Die Anwendung ändert direkt die Netzwerkeinstellungen dieses Computers. Sie sind allein für die angewendeten Konfigurationen verantwortlich; ungeeignete Einstellungen können Ihren Netzwerk- oder Internetzugang unterbrechen. Die Software wird „wie besehen“ ohne Gewährleistung bereitgestellt.\r\n\r\n"
                 + "3. Datenschutz und DSGVO-Konformität (EU 2016/679)\r\n"
-                + "• Keine Datenerhebung: Easy IP-Switch arbeitet zu 100 % lokal. Es werden keine personenbezogenen Daten, IP-Adressen oder Telemetriedaten erhoben oder an Angeli Visions oder Dritte übermittelt.\r\n"
+                + "• Keine Datenerhebung: AV IP-Switch arbeitet zu 100 % lokal. Es werden keine personenbezogenen Daten, IP-Adressen oder Telemetriedaten erhoben oder an Angeli Visions oder Dritte übermittelt.\r\n"
                 + "• Nur lokale Speicherung: Lediglich die gewählte Sprache und Ihre Zustimmung werden in Ihrer lokalen Windows-Benutzersitzung gespeichert, ergänzt durch ein lokales Protokoll bei technischen Fehlern.\r\n"
                 + "• Externe Links: Die offizielle Website und die PayPal-Spendenseite öffnen sich nur nach Ihrem ausdrücklichen Klick.\r\n\r\n"
                 + "4. Ihre Wahl\r\n"
                 + "Klicken Sie auf „Ich akzeptiere“, um Ihre Zustimmung zu speichern und die Anwendung zu öffnen, oder auf „Ich lehne ab“, um die Anwendung zu schließen (beim nächsten Start werden Sie erneut gefragt).",
                 "1. Objeto y licencia (MIT)\r\n"
-                + "Easy IP-Switch, editado por Angeli Visions, permite consultar y modificar localmente la configuración IPv4 de las tarjetas de red de Windows (DHCP, dirección fija, máscara, puerta de enlace, activación) y realizar pruebas de ping.\r\n\r\n"
+                + "AV IP-Switch, editado por Angeli Visions, permite consultar y modificar localmente la configuración IPv4 de las tarjetas de red de Windows (DHCP, dirección fija, máscara, puerta de enlace, activación) y realizar pruebas de ping.\r\n\r\n"
                 + "2. Responsabilidad de uso\r\n"
                 + "La aplicación modifica directamente los ajustes de red de este equipo. Usted es el único responsable de las configuraciones aplicadas; unos ajustes inadecuados pueden interrumpir su acceso a la red o a Internet. El software se proporciona «tal cual», sin garantía.\r\n\r\n"
                 + "3. Protección de datos y cumplimiento del RGPD (UE 2016/679)\r\n"
-                + "• Sin recopilación de datos: Easy IP-Switch funciona 100 % en local. No se recopila ni transmite ningún dato personal, dirección IP ni telemetría a Angeli Visions ni a terceros.\r\n"
+                + "• Sin recopilación de datos: AV IP-Switch funciona 100 % en local. No se recopila ni transmite ningún dato personal, dirección IP ni telemetría a Angeli Visions ni a terceros.\r\n"
                 + "• Almacenamiento exclusivamente local: solo el idioma elegido y su aceptación se guardan en su sesión local de Windows, junto con un registro local en caso de error técnico.\r\n"
                 + "• Enlaces externos: el sitio web oficial y la página de donación de PayPal solo se abren mediante un clic explícito por su parte.\r\n\r\n"
                 + "4. Su elección\r\n"
                 + "Haga clic en «Acepto» para recordar su consentimiento y abrir la aplicación, o en «Rechazo» para cerrar la aplicación (se le volverá a preguntar en el próximo inicio).");
+
+            // Scan réseaux
+            Add("Scan réseaux", "Network scan", "Netzwerk-Scan", "Escaneo de red");
+            Add("Scanner le réseau local", "Scan the local network", "Das lokale Netzwerk scannen", "Escanear la red local");
+            Add("Découvrez les machines connectées, leur adresse et leur système. Les agents ajoutent le DHCP, le pare-feu et les actions à distance.",
+                "Discover connected machines, their address and system. Agents add DHCP, firewall and remote actions.",
+                "Entdecken Sie verbundene Geräte, ihre Adresse und ihr System. Agenten ergänzen DHCP, Firewall und Aktionen aus der Ferne.",
+                "Descubra los equipos conectados, su dirección y su sistema. Los agentes añaden DHCP, cortafuegos y acciones remotas.");
+            Add("Carte réseau / sous-réseau", "Network card / subnet", "Netzwerkkarte / Subnetz", "Tarjeta de red / subred");
+            Add("Plage à scanner", "Range to scan", "Zu scannender Bereich", "Rango a escanear");
+            Add("ex. 192.168.1.0/24, 192.168.1.50-60", "e.g. 192.168.1.0/24, 192.168.1.50-60", "z. B. 192.168.1.0/24, 192.168.1.50-60", "p. ej. 192.168.1.0/24, 192.168.1.50-60");
+            Add("Scanner", "Scan", "Scannen", "Escanear");
+            Add("Arrêter", "Stop", "Stoppen", "Detener");
+            Add("Inclure les agents distants", "Include remote agents", "Remote-Agenten einbeziehen", "Incluir agentes remotos");
+            Add("Disponible avec l'agent AV IP-Switch.", "Available with the AV IP-Switch agent.", "Verfügbar mit dem AV IP-Switch-Agenten.", "Disponible con el agente AV IP-Switch.");
+            Add("Toutes les cartes", "All cards", "Alle Karten", "Todas las tarjetas");
+            Add("Nom", "Name", "Name", "Nombre");
+            Add("Serveur DHCP", "DHCP server", "DHCP-Server", "Servidor DHCP");
+            Add("Pare-feu", "Firewall", "Firewall", "Cortafuegos");
+            Add("Système", "System", "System", "Sistema");
+            Add("Dernière réponse", "Last response", "Letzte Antwort", "Última respuesta");
+            Add("Équipement réseau", "Network device", "Netzwerkgerät", "Dispositivo de red");
+            Add("Inconnu", "Unknown", "Unbekannt", "Desconocido");
+            Add("Prêt. Choisissez une plage puis lancez le scan.",
+                "Ready. Choose a range and start the scan.",
+                "Bereit. Wählen Sie einen Bereich und starten Sie den Scan.",
+                "Listo. Elija un rango e inicie el escaneo.");
+            Add("Scan de {0}… {1}/{2}", "Scanning {0}… {1}/{2}", "Scan von {0}… {1}/{2}", "Escaneando {0}… {1}/{2}");
+            Add("Scan terminé : {0} machine(s) trouvée(s).",
+                "Scan complete: {0} machine(s) found.",
+                "Scan abgeschlossen: {0} Gerät(e) gefunden.",
+                "Escaneo completado: {0} máquina(s) encontrada(s).");
+            Add("Aucune machine trouvée. Vérifiez la plage et le pare-feu.",
+                "No machines found. Check the range and the firewall.",
+                "Keine Geräte gefunden. Prüfen Sie den Bereich und die Firewall.",
+                "No se encontraron máquinas. Compruebe el rango y el cortafuegos.");
+            Add("Scan arrêté : {0} machine(s) trouvée(s).",
+                "Scan stopped: {0} machine(s) found.",
+                "Scan gestoppt: {0} Gerät(e) gefunden.",
+                "Escaneo detenido: {0} máquina(s) encontrada(s).");
+            Add("Adresse IP copiée.", "IP address copied.", "IP-Adresse kopiert.", "Dirección IP copiada.");
+            Add("Copier l'adresse IP", "Copy IP address", "IP-Adresse kopieren", "Copiar la dirección IP");
+            Add("Détails", "Details", "Details", "Detalles");
+            Add("Sélectionnez une machine pour voir ses détails.",
+                "Select a machine to see its details.",
+                "Wählen Sie ein Gerät, um Details anzuzeigen.",
+                "Seleccione una máquina para ver sus detalles.");
+            Add("Nom : {0}   ·   MAC : {1}   ·   Système : {2}",
+                "Name: {0}   ·   MAC: {1}   ·   System: {2}",
+                "Name: {0}   ·   MAC: {1}   ·   System: {2}",
+                "Nombre: {0}   ·   MAC: {1}   ·   Sistema: {2}");
+            Add("Réponse : {0}   ·   TTL : {1}   ·   Source : {2}",
+                "Response: {0}   ·   TTL: {1}   ·   Source: {2}",
+                "Antwort: {0}   ·   TTL: {1}   ·   Quelle: {2}",
+                "Respuesta: {0}   ·   TTL: {1}   ·   Origen: {2}");
+            Add("à l'instant", "just now", "gerade eben", "ahora mismo");
+            Add("il y a {0} s", "{0} s ago", "vor {0} s", "hace {0} s");
+            Add("il y a {0} min", "{0} min ago", "vor {0} min", "hace {0} min");
+            Add("il y a {0} h", "{0} h ago", "vor {0} h", "hace {0} h");
+            Add("Saisissez une plage à scanner.", "Enter a range to scan.", "Geben Sie einen zu scannenden Bereich ein.", "Introduzca un rango para escanear.");
+            Add("Préfixe invalide : {0} (0 à 32 attendu).",
+                "Invalid prefix: {0} (0 to 32 expected).",
+                "Ungültiges Präfix: {0} (0 bis 32 erwartet).",
+                "Prefijo no válido: {0} (se esperaba 0 a 32).");
+            Add("La fin de la plage précède son début : {0}.",
+                "The range end precedes its start: {0}.",
+                "Das Ende des Bereichs liegt vor seinem Anfang: {0}.",
+                "El final del rango precede a su inicio: {0}.");
+            Add("Plage trop grande : {0} (maximum 65 536 adresses).",
+                "Range too large: {0} (maximum 65,536 addresses).",
+                "Bereich zu groß: {0} (maximal 65.536 Adressen).",
+                "Rango demasiado grande: {0} (máximo 65 536 direcciones).");
+            Add("Trop d'adresses au total (maximum 65 536).",
+                "Too many addresses in total (maximum 65,536).",
+                "Zu viele Adressen insgesamt (maximal 65.536).",
+                "Demasiadas direcciones en total (máximo 65 536).");
+            Add("Plage invalide : {0}", "Invalid range: {0}", "Ungültiger Bereich: {0}", "Rango no válido: {0}");
+            Add("Cette plage contient {0} adresses. Le scan peut prendre plusieurs minutes. Continuer ?",
+                "This range contains {0} addresses. The scan may take several minutes. Continue?",
+                "Dieser Bereich enthält {0} Adressen. Der Scan kann mehrere Minuten dauern. Fortfahren?",
+                "Este rango contiene {0} direcciones. El escaneo puede tardar varios minutos. ¿Continuar?");
+            Add("Aucune adresse à scanner dans cette plage.",
+                "No address to scan in this range.",
+                "Keine Adresse in diesem Bereich zu scannen.",
+                "No hay direcciones que escanear en este rango.");
+            Add("Le scan a échoué : {0}",
+                "The scan failed: {0}",
+                "Der Scan ist fehlgeschlagen: {0}",
+                "El escaneo falló: {0}");
+            Add("Arrêt du scan…", "Stopping the scan…", "Scan wird gestoppt…", "Deteniendo el escaneo…");
+            Add("Double-cliquez pour copier l'adresse IP.",
+                "Double-click to copy the IP address.",
+                "Doppelklicken Sie, um die IP-Adresse zu kopieren.",
+                "Haga doble clic para copiar la dirección IP.");
+            Add("Impossible de copier l'adresse IP : {0}",
+                "Unable to copy the IP address: {0}",
+                "IP-Adresse konnte nicht kopiert werden: {0}",
+                "No se pudo copiar la dirección IP: {0}");
         }
     }
 }

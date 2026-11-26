@@ -85,7 +85,7 @@ namespace EasyIpSwitch
             _lblDonateTitle.BackColor = Theme.Surface;
             _lblDonateTitle.TextAlign = ContentAlignment.MiddleLeft;
             _lblDonateTitle.UseMnemonic = false;
-            _lblDonateTitle.Text = L.T("Soutenir Easy IP-Switch");
+            _lblDonateTitle.Text = L.T("Soutenir AV IP-Switch");
             Controls.Add(_lblDonateTitle);
 
             _lblDonateText.AutoSize = false;

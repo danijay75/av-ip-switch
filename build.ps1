@@ -35,7 +35,7 @@ $icon = Join-Path $assets 'app.ico'
 $manifest = Join-Path $src 'app.manifest'
 
 $appInfo = Get-Content -LiteralPath (Join-Path $src 'AppInfo.cs') -Raw
-$version = '1.1.3'
+$version = '1.2.1'
 if ($appInfo -match 'Version\s*=\s*"([^"]+)"') {
     $version = $Matches[1]
 }
@@ -62,9 +62,9 @@ if (-not [string]::IsNullOrWhiteSpace($OutputPath)) {
         $output = Join-Path $root $OutputPath
     }
 } elseif ($Preview) {
-    $output = Join-Path $dist 'Easy IP-Switch (apercu).exe'
+    $output = Join-Path $dist 'AV IP-Switch (apercu).exe'
 } else {
-    $output = Join-Path $dist ("easy ip-switch v{0}.exe" -f $version)
+    $output = Join-Path $dist ("AV IP-Switch v{0}.exe" -f $version)
 }
 
 $outputDirectory = Split-Path -Parent $output
