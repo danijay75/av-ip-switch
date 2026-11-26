@@ -7,6 +7,14 @@ Document de passation destiné à l'instance Antigravity sur **le Mac dédié** 
 
 ---
 
+## Prompt prêt à coller dans Antigravity sur le Mac
+
+```text
+Mets d'abord le dépôt Git à jour (`git remote set-url origin https://github.com/danijay75/av-ip-switch.git && git fetch origin && git pull --rebase origin main`), puis lis intégralement `docs/PASSATION-MACOS-1.2.2.md` et implémente toutes les étapes macOS pour AV IP-Switch v1.2.2, en mettant également à jour `mac/PLAN-ACTION-MACOS.md`, `mac/ETAT-DU-PROJET-MACOS.md`, `mac/README.md` et les tests Swift, avant de lancer `bash mac/scripts/test.sh` et `bash mac/scripts/build-mac.sh --universal`.
+```
+
+---
+
 ## 1. État actuel du projet (après Windows v1.2.2)
 
 ### Dépôt GitHub et artefacts Windows
