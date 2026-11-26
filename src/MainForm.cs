@@ -57,6 +57,7 @@ namespace EasyIpSwitch
         private readonly PingView _pingView = new PingView();
         private readonly ScanView _scanView = new ScanView();
         private readonly FlatButton _btnRefresh = new FlatButton();
+        private readonly FlatButton _btnShortcut = new FlatButton();
         private readonly FlatButton _btnConnections = new FlatButton();
         private readonly LanguageSelector _languageSelector = new LanguageSelector();
         private readonly Label _lblStatus = new Label();
@@ -73,11 +74,13 @@ namespace EasyIpSwitch
         private readonly List<AdapterCard> _order = new List<AdapterCard>();
         private readonly Dictionary<string, PendingToggle> _pendingToggles = new Dictionary<string, PendingToggle>(StringComparer.OrdinalIgnoreCase);
         private readonly INetworkConnectionsBackend _connectionsBackend;
+        private readonly IAppShortcutBackend _appShortcutBackend;
 
         private bool _busy;
         private bool _loading;
         private bool _manualRefreshQueued;
         private bool _shortcutBusy;
+        private bool _appShortcutBusy;
         private bool _elevated;
         private bool _suppressLanguage;
         private bool _layingOutCards;
@@ -89,19 +92,25 @@ namespace EasyIpSwitch
         private StatusKind _statusKind;
 
         public MainForm()
-            : this(null)
+            : this(null, null)
         {
         }
 
         internal MainForm(INetworkConnectionsBackend connectionsBackend)
+            : this(connectionsBackend, null)
+        {
+        }
+
+        internal MainForm(INetworkConnectionsBackend connectionsBackend, IAppShortcutBackend appShortcutBackend)
         {
             _connectionsBackend = connectionsBackend ?? new WindowsNetworkConnectionsBackend();
+            _appShortcutBackend = appShortcutBackend ?? new WindowsAppShortcutBackend();
             Text = AppInfo.ProductName + " " + AppInfo.VersionLabel;
             Font = Theme.Body;
             BackColor = Theme.Bg;
             AutoScaleMode = AutoScaleMode.None;
             StartPosition = FormStartPosition.CenterScreen;
-            MinimumSize = new Size(Theme.S(880), Theme.S(620));
+            MinimumSize = new Size(Theme.S(920), Theme.S(620));
             DoubleBuffered = true;
             try
             {
@@ -166,6 +175,15 @@ namespace EasyIpSwitch
             _tabs.Items = new string[] { L.T("Cartes réseau"), L.T("Test de ping"), L.T("Scan réseaux") };
             _tabs.SelectedIndexChanged += delegate { UpdateTab(); };
             _content.Controls.Add(_tabs);
+
+            _btnShortcut.Kind = ButtonKind.Secondary;
+            _btnShortcut.Text = L.T("Créer un raccourci");
+            _btnShortcut.ShowShortcutIcon = true;
+            _btnShortcut.AccessibleName = L.T("Créer un raccourci");
+            _btnShortcut.AccessibleDescription = L.T("Copie AV IP-Switch dans Documents et crée un raccourci sur le Bureau.");
+            _btnShortcut.Click += delegate { CreateAppShortcut(); };
+            _tip.SetToolTip(_btnShortcut, L.T("Copie AV IP-Switch dans Documents et crée un raccourci sur le Bureau."));
+            _content.Controls.Add(_btnShortcut);
 
             _btnConnections.Kind = ButtonKind.Secondary;
             _btnConnections.Text = L.T("Connexions réseau");
@@ -254,6 +272,9 @@ namespace EasyIpSwitch
 
             Text = AppInfo.ProductName + " " + AppInfo.VersionLabel;
             _btnRefresh.Text = L.T("Actualiser");
+            _btnShortcut.Text = L.T("Créer un raccourci");
+            _btnShortcut.AccessibleName = L.T("Créer un raccourci");
+            _btnShortcut.AccessibleDescription = L.T("Copie AV IP-Switch dans Documents et crée un raccourci sur le Bureau.");
             _btnConnections.Text = L.T("Connexions réseau");
             _btnConnections.AccessibleName = L.T("Connexions réseau");
             _btnConnections.AccessibleDescription = L.T("Ouvre les Connexions réseau Windows et crée un raccourci sur le Bureau.");
@@ -267,6 +288,7 @@ namespace EasyIpSwitch
             }
 
             _tip.SetToolTip(_btnRefresh, L.T("Mettre à jour la liste et l'état des cartes réseau (F5)"));
+            _tip.SetToolTip(_btnShortcut, L.T("Copie AV IP-Switch dans Documents et crée un raccourci sur le Bureau."));
             _tip.SetToolTip(_btnConnections, L.T("Ouvre les Connexions réseau Windows et crée leur raccourci sur le Bureau."));
             _tip.SetToolTip(_languageSelector, L.T("Changer la langue de l'application"));
             _tip.SetToolTip(_themeToggle, L.T("Mode clair ou sombre"));
@@ -402,6 +424,59 @@ namespace EasyIpSwitch
 
             _lnkSite.Top = (height - _lnkSite.Height) / 2;
             _lnkSite.Left = _lblSeparator.Left - Theme.S(8) - _lnkSite.Width;
+        }
+
+        private void CreateAppShortcut()
+        {
+            if (_busy || _appShortcutBusy)
+            {
+                return;
+            }
+
+            _appShortcutBusy = true;
+            _btnShortcut.Enabled = false;
+            SetStatus(L.T("Copie d'AV IP-Switch dans Documents et création du raccourci sur le Bureau…"), StatusKind.Info);
+
+            try
+            {
+                Thread worker = new Thread(new ThreadStart(delegate
+                {
+                    try
+                    {
+                        AppShortcutResult result = AppShortcut.Execute(_appShortcutBackend);
+                        TryInvoke(delegate
+                        {
+                            _appShortcutBusy = false;
+                            _btnShortcut.Enabled = !_busy;
+                            if (result.Success)
+                            {
+                                _tip.SetToolTip(_btnShortcut,
+                                    L.F("Copie : {0}\r\nRaccourci : {1}", result.CopyPath, result.ShortcutPath));
+                            }
+                            SetStatus(result.Message, result.Success ? StatusKind.Success : StatusKind.Error);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ErrorMessage(ex);
+                        TryInvoke(delegate
+                        {
+                            _appShortcutBusy = false;
+                            _btnShortcut.Enabled = !_busy;
+                            SetStatus(L.F("Impossible de créer le raccourci : {0}", message), StatusKind.Error);
+                        });
+                    }
+                }));
+                worker.IsBackground = true;
+                worker.SetApartmentState(ApartmentState.STA);
+                worker.Start();
+            }
+            catch (Exception ex)
+            {
+                _appShortcutBusy = false;
+                _btnShortcut.Enabled = !_busy;
+                SetStatus(L.F("Impossible de lancer l'opération : {0}", ErrorMessage(ex)), StatusKind.Error);
+            }
         }
 
         private void OpenConnectionsAndCreateShortcut()
@@ -558,7 +633,7 @@ namespace EasyIpSwitch
                 return;
             }
 
-            if (_busy || _loading || _shortcutBusy)
+            if (_busy || _loading || _shortcutBusy || _appShortcutBusy)
             {
                 e.Cancel = true;
                 SetStatus(L.T("Opération en cours : attendez la fin du traitement avant de fermer."), StatusKind.Error);
@@ -726,10 +801,15 @@ namespace EasyIpSwitch
                 _themeToggle.Left - Theme.S(10) - Theme.S(82),
                 Theme.S(21), Theme.S(82), Theme.S(34));
 
-            _btnConnections.SetBounds(_content.Width - pad - Theme.S(190), Theme.S(15), Theme.S(190), Theme.S(34));
+            int connectionsWidth = _btnConnections.PreferredWidth(Theme.S(165));
+            int shortcutWidth = _btnShortcut.PreferredWidth(Theme.S(145));
+            int connectionsLeft = _content.Width - pad - connectionsWidth;
+            int shortcutLeft = connectionsLeft - Theme.S(10) - shortcutWidth;
+            _btnConnections.SetBounds(connectionsLeft, Theme.S(15), connectionsWidth, Theme.S(34));
+            _btnShortcut.SetBounds(shortcutLeft, Theme.S(15), shortcutWidth, Theme.S(34));
             _tabs.SetBounds(pad, Theme.S(12),
                 Math.Min(Math.Max(Theme.S(240), _tabs.PreferredWidth),
-                    Math.Max(Theme.S(240), _btnConnections.Left - pad - Theme.S(8))),
+                    Math.Max(Theme.S(240), _btnShortcut.Left - pad - Theme.S(8))),
                 Theme.S(40));
 
             int viewsTop = Theme.S(56);
@@ -1250,6 +1330,7 @@ namespace EasyIpSwitch
                 _order[i].SetBusy(busy);
             }
             _btnRefresh.Enabled = !busy;
+            _btnShortcut.Enabled = !busy && !_appShortcutBusy;
             _btnConnections.Enabled = !busy && !_shortcutBusy;
             Cursor = busy ? Cursors.WaitCursor : Cursors.Default;
             if (statusText != null)

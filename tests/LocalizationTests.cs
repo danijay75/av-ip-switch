@@ -101,6 +101,8 @@ namespace EasyIpSwitch
 
                 Assert(Field<FlatButton>(form, "_btnRefresh").Text == "Refresh",
                     "The refresh button must switch language without restarting.");
+                Assert(Field<FlatButton>(form, "_btnShortcut").Text == "Create shortcut",
+                    "The shortcut button must switch language.");
                 Assert(Field<FlatButton>(form, "_btnConnections").Text == "Network connections",
                     "The connections button must switch language.");
                 TabBar tabs = Field<TabBar>(form, "_tabs");

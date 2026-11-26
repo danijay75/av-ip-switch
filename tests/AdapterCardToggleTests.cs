@@ -35,6 +35,7 @@ namespace EasyIpSwitch
                 int staticAssertions = StaticDefaultsTests.Run();
                 int staticOperationAssertions = StaticIpv4Tests.Run();
                 int shortcutAssertions = NetworkConnectionsTests.Run();
+                int appShortcutAssertions = AppShortcutTests.Run();
                 int dialogAssertions = ConfirmDialogTests.Run();
                 int quitAssertions = QuitDialogTests.Run();
                 int localizationAssertions = LocalizationTests.Run();
@@ -42,7 +43,7 @@ namespace EasyIpSwitch
                 int termsAssertions = TermsDialogTests.Run();
                 int scanRangeAssertions = ScanRangeTests.Run();
 
-                Console.WriteLine("AV IP-Switch tests passed ({0} assertions).", _assertions + controlAssertions + integrationAssertions + staticAssertions + staticOperationAssertions + shortcutAssertions + dialogAssertions + quitAssertions + localizationAssertions + versionAssertions + termsAssertions + scanRangeAssertions);
+                Console.WriteLine("AV IP-Switch tests passed ({0} assertions).", _assertions + controlAssertions + integrationAssertions + staticAssertions + staticOperationAssertions + shortcutAssertions + appShortcutAssertions + dialogAssertions + quitAssertions + localizationAssertions + versionAssertions + termsAssertions + scanRangeAssertions);
                 return 0;
             }
             catch (Exception ex)

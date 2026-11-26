@@ -46,6 +46,19 @@ namespace EasyIpSwitch
 
         public bool ShowRefreshIcon { get; set; }
 
+        public bool ShowShortcutIcon { get; set; }
+
+        public int PreferredWidth(int minWidth)
+        {
+            Size textSize = TextRenderer.MeasureText(Text ?? "", Font, new Size(1000, Math.Max(1, Height)),
+                TextFormatFlags.NoPadding);
+            bool hasIcon = ShowRefreshIcon || ShowShortcutIcon || _systemIcon != null;
+            int iconSize = _systemIcon != null ? Theme.S(20) : Theme.S(14);
+            int gap = Theme.S(8);
+            int contentWidth = textSize.Width + (hasIcon ? iconSize + gap : 0);
+            return Math.Max(minWidth, contentWidth + Theme.S(24));
+        }
+
         // The button owns the cloned Windows icon and disposes it with itself.
         public Icon SystemIcon
         {
@@ -168,7 +181,7 @@ namespace EasyIpSwitch
             }
 
             Size textSize = TextRenderer.MeasureText(Text, Font, new Size(1000, Height), TextFormatFlags.NoPadding);
-            bool hasIcon = ShowRefreshIcon || _systemIcon != null;
+            bool hasIcon = ShowRefreshIcon || ShowShortcutIcon || _systemIcon != null;
             int iconSize = _systemIcon != null ? Theme.S(20) : Theme.S(14);
             int gap = Theme.S(8);
             int contentWidth = textSize.Width + (hasIcon ? iconSize + gap : 0);
@@ -177,6 +190,11 @@ namespace EasyIpSwitch
             if (ShowRefreshIcon)
             {
                 Glyphs.Refresh(g, new Rectangle(x, (Height - iconSize) / 2, iconSize, iconSize), text, Theme.S(1.5f));
+                x += iconSize + gap;
+            }
+            else if (ShowShortcutIcon)
+            {
+                Glyphs.Shortcut(g, new Rectangle(x, (Height - iconSize) / 2, iconSize, iconSize), text, Theme.S(1.5f));
                 x += iconSize + gap;
             }
             else if (_systemIcon != null)

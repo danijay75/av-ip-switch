@@ -6,6 +6,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("AV IP-Switch")]
 [assembly: AssemblyCompany("Angeli Visions")]
 [assembly: AssemblyCopyright("© Angeli Visions. Tous droits réservés.")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.2.2.0")]
+[assembly: AssemblyFileVersion("1.2.2.0")]
 [assembly: ComVisible(false)]

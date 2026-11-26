@@ -124,6 +124,45 @@ namespace EasyIpSwitch
             g.SmoothingMode = old;
         }
 
+        public static void Shortcut(Graphics g, Rectangle box, Color color, float stroke)
+        {
+            SmoothingMode old = g.SmoothingMode;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            float x = box.X + box.Width * 0.10f;
+            float y = box.Y + box.Height * 0.22f;
+            float size = box.Width * 0.68f;
+            RectangleF frame = new RectangleF(x, y, size, size);
+
+            using (Pen pen = new Pen(color, stroke))
+            {
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                pen.LineJoin = LineJoin.Round;
+
+                using (GraphicsPath path = Theme.RoundedRect(frame, box.Width * 0.14f))
+                {
+                    g.DrawPath(pen, path);
+                }
+
+                float tipX = box.Right - box.Width * 0.10f;
+                float tipY = box.Y + box.Height * 0.10f;
+                float tailX = box.X + box.Width * 0.44f;
+                float tailY = box.Y + box.Height * 0.56f;
+                g.DrawLine(pen, tailX, tailY, tipX, tipY);
+
+                float arm = box.Width * 0.26f;
+                g.DrawLines(pen, new PointF[]
+                {
+                    new PointF(tipX - arm, tipY),
+                    new PointF(tipX, tipY),
+                    new PointF(tipX, tipY + arm)
+                });
+            }
+
+            g.SmoothingMode = old;
+        }
+
         public static void Logo(Graphics g, Rectangle box)
         {
             SmoothingMode old = g.SmoothingMode;

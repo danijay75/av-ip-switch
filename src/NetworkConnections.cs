@@ -252,7 +252,7 @@ namespace EasyIpSwitch
         private static extern void SHChangeNotify(uint eventId, uint flags,
             [MarshalAs(UnmanagedType.LPWStr)] string item, IntPtr secondItem);
 
-        private static void NotifyDesktop(string path, bool created)
+        internal static void NotifyDesktop(string path, bool created)
         {
             const uint pathWide = 0x0005;
             const uint flushNoWait = 0x2000;

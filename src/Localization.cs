@@ -739,6 +739,82 @@ namespace EasyIpSwitch
                 "Open Windows network connections",
                 "Windows-Netzwerkverbindungen öffnen",
                 "Abrir las conexiones de red de Windows");
+            Add("Créer un raccourci",
+                "Create shortcut",
+                "Verknüpfung erstellen",
+                "Crear acceso directo");
+            Add("Copie AV IP-Switch dans Documents et crée un raccourci sur le Bureau.",
+                "Copies AV IP-Switch to Documents and creates a Desktop shortcut.",
+                "Kopiert AV IP-Switch in Dokumente und erstellt eine Desktop-Verknüpfung.",
+                "Copia AV IP-Switch en Documentos y crea un acceso directo en el escritorio.");
+            Add("Lancer AV IP-Switch",
+                "Launch AV IP-Switch",
+                "AV IP-Switch starten",
+                "Iniciar AV IP-Switch");
+            Add("Copie d'AV IP-Switch dans Documents et création du raccourci sur le Bureau…",
+                "Copying AV IP-Switch to Documents and creating the Desktop shortcut…",
+                "AV IP-Switch wird nach Dokumente kopiert und die Desktop-Verknüpfung erstellt…",
+                "Copiando AV IP-Switch en Documentos y creando el acceso directo en el escritorio…");
+            Add("Copie : {0}\r\nRaccourci : {1}",
+                "Copy: {0}\r\nShortcut: {1}",
+                "Kopie: {0}\r\nVerknüpfung: {1}",
+                "Copia: {0}\r\nAcceso directo: {1}");
+            Add("Opération non confirmée.",
+                "Operation not confirmed.",
+                "Vorgang nicht bestätigt.",
+                "Operación no confirmada.");
+            Add("Exécutable source introuvable.",
+                "Source executable not found.",
+                "Quelldatei nicht gefunden.",
+                "No se encontró el ejecutable de origen.");
+            Add("Le dossier Documents est introuvable.",
+                "The Documents folder could not be found.",
+                "Der Ordner Dokumente wurde nicht gefunden.",
+                "No se encontró la carpeta Documentos.");
+            Add("Impossible de copier l'application dans Documents : {0}",
+                "Unable to copy the application to Documents: {0}",
+                "Die Anwendung konnte nicht nach Dokumente kopiert werden: {0}",
+                "No se pudo copiar la aplicación en Documentos: {0}");
+            Add("Impossible de remplacer « {0} » (fermez l'autre fenêtre d'AV IP-Switch exécutée depuis Documents puis réessayez).",
+                "Unable to replace “{0}” (close the other AV IP-Switch window running from Documents and try again).",
+                "„{0}“ konnte nicht ersetzt werden (schließen Sie das andere aus Dokumente gestartete AV IP-Switch-Fenster und versuchen Sie es erneut).",
+                "No se pudo reemplazar «{0}» (cierre la otra ventana de AV IP-Switch ejecutada desde Documentos e inténtelo de nuevo).");
+            Add("L'application est déjà dans Documents (« {0} »), mais le raccourci n'a pas pu être créé : {1}",
+                "The application is already in Documents (“{0}”), but the shortcut could not be created: {1}",
+                "Die Anwendung befindet sich bereits in Dokumente („{0}“), aber die Verknüpfung konnte nicht erstellt werden: {1}",
+                "La aplicación ya está en Documentos («{0}»), pero no se pudo crear el acceso directo: {1}");
+            Add("Copie créée dans Documents (« {0} »), mais le raccourci n'a pas pu être créé : {1}",
+                "Copy created in Documents (“{0}”), but the shortcut could not be created: {1}",
+                "Kopie in Dokumente erstellt („{0}“), aber die Verknüpfung konnte nicht erstellt werden: {1}",
+                "Copia creada en Documentos («{0}»), pero no se pudo crear el acceso directo: {1}");
+            Add("Application déjà dans Documents (« {0} ») ; raccourci « {1} » créé sur le Bureau.",
+                "Application already in Documents (“{0}”); shortcut “{1}” created on the desktop.",
+                "Anwendung bereits in Dokumente („{0}“); Verknüpfung „{1}“ auf dem Desktop erstellt.",
+                "La aplicación ya está en Documentos («{0}»); acceso directo «{1}» creado en el escritorio.");
+            Add("Application déjà dans Documents (« {0} ») ; raccourci « {1} » mis à jour sur le Bureau.",
+                "Application already in Documents (“{0}”); shortcut “{1}” updated on the desktop.",
+                "Anwendung bereits in Dokumente („{0}“); Verknüpfung „{1}“ auf dem Desktop aktualisiert.",
+                "La aplicación ya está en Documentos («{0}»); acceso directo «{1}» actualizado en el escritorio.");
+            Add("Application déjà dans Documents (« {0} ») ; raccourci « {1} » déjà à jour sur le Bureau.",
+                "Application already in Documents (“{0}”); shortcut “{1}” already up to date on the desktop.",
+                "Anwendung bereits in Dokumente („{0}“); Verknüpfung „{1}“ auf dem Desktop bereits aktuell.",
+                "La aplicación ya está en Documentos («{0}»); el acceso directo «{1}» ya está al día en el escritorio.");
+            Add("Copie enregistrée dans Documents (« {0} ») ; raccourci « {1} » créé sur le Bureau.",
+                "Copy saved in Documents (“{0}”); shortcut “{1}” created on the desktop.",
+                "Kopie in Dokumente gespeichert („{0}“); Verknüpfung „{1}“ auf dem Desktop erstellt.",
+                "Copia guardada en Documentos («{0}»); acceso directo «{1}» creado en el escritorio.");
+            Add("Copie enregistrée dans Documents (« {0} ») ; raccourci « {1} » mis à jour sur le Bureau.",
+                "Copy saved in Documents (“{0}”); shortcut “{1}” updated on the desktop.",
+                "Kopie in Dokumente gespeichert („{0}“); Verknüpfung „{1}“ auf dem Desktop aktualisiert.",
+                "Copia guardada en Documentos («{0}»); acceso directo «{1}» actualizado en el escritorio.");
+            Add("Copie enregistrée dans Documents (« {0} ») ; raccourci « {1} » déjà à jour sur le Bureau.",
+                "Copy saved in Documents (“{0}”); shortcut “{1}” already up to date on the desktop.",
+                "Kopie in Dokumente gespeichert („{0}“); Verknüpfung „{1}“ auf dem Desktop bereits aktuell.",
+                "Copia guardada en Documentos («{0}»); el acceso directo «{1}» ya está al día en el escritorio.");
+            Add("Impossible de créer le raccourci : {0}",
+                "Unable to create the shortcut: {0}",
+                "Verknüpfung konnte nicht erstellt werden: {0}",
+                "No se pudo crear el acceso directo: {0}");
             Add("Carte réseau introuvable. Actualisez la liste avant de réessayer.",
                 "Network card not found. Refresh the list before trying again.",
                 "Netzwerkkarte nicht gefunden. Aktualisieren Sie die Liste, bevor Sie es erneut versuchen.",
