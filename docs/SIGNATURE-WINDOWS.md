@@ -88,7 +88,7 @@ Ou signer un binaire déjà compilé :
 
 ```powershell
 .\sign.ps1 `
-  -Path ".\dist\AV IP-Switch v1.2.1.exe" `
+  -Path ".\dist\AV IP-Switch v1.4.exe" `
   -Mode Azure `
   -AzureDlib "C:\outils\Azure.CodeSigning.Dlib.dll" `
   -AzureMetadata ".\packaging\windows\artifact-signing-metadata.json"
@@ -97,8 +97,8 @@ Ou signer un binaire déjà compilé :
 Vérification manuelle :
 
 ```powershell
-signtool verify /pa /v ".\dist\AV IP-Switch v1.2.1.exe"
-Get-AuthenticodeSignature ".\dist\AV IP-Switch v1.2.1.exe" |
+signtool verify /pa /v ".\dist\AV IP-Switch v1.4.exe"
+Get-AuthenticodeSignature ".\dist\AV IP-Switch v1.4.exe" |
   Format-List Status, StatusMessage, SignerCertificate
 ```
 

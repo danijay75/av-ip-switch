@@ -2,7 +2,7 @@
 
 Application de changement rapide d’adresse IP pour **Windows** et **macOS**.
 
-Version Windows actuelle : **1.2.2** (macOS publié : 1.1.3)
+Version Windows actuelle : **1.4** (macOS publié : 1.1.3)
 
 Site officiel : <https://angelivisions.com/fr/av-ip-switch>
 
@@ -46,12 +46,12 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1
 Le binaire est produit dans :
 
 ```text
-dist/AV IP-Switch v1.2.2.exe
+dist/AV IP-Switch v1.4.exe
 ```
 
 ## Signature et paquet Windows
 
-La version 1.2.2 est encore non signée : SmartScreen peut afficher un
+La version 1.4 est encore non signée : SmartScreen peut afficher un
 avertissement. Le pipeline de signature est prêt dans `sign.ps1` et
 `package-windows.ps1`.
 
@@ -64,7 +64,7 @@ Signature Azure Artifact Signing (recommandée) :
   -Package
 ```
 
-Le paquet `dist/av-ip-switch-1.2.2-windows.zip` contient l'exécutable,
+Le paquet `dist/av-ip-switch-1.4-windows.zip` contient l'exécutable,
 le README quadrilingue, la licence et les empreintes SHA-256. Le modèle
 de README est choisi automatiquement selon la signature : version
 « non signée » ou version « signée Angeli Visions ». Les détails de

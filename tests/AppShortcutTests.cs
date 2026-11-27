@@ -55,7 +55,7 @@ namespace EasyIpSwitch
                 File.WriteAllBytes(sourceExe, payload);
 
                 AppShortcutResult result = AppShortcut.Install(sourceExe, docsDir, desktopDir, null);
-                string expectedCopy = Path.Combine(docsDir, "AV IP-Switch v1.2.2.exe");
+                string expectedCopy = Path.Combine(docsDir, "AV IP-Switch v1.4.exe");
                 string expectedLink = Path.Combine(desktopDir, "AV IP-Switch.lnk");
 
                 Assert(result.Success && result.Copied && result.ShortcutCreated,
@@ -84,7 +84,7 @@ namespace EasyIpSwitch
             string desktopDir = CreateTempDir("AvIpSwitch-desk");
             try
             {
-                string docsExe = Path.Combine(docsDir, "AV IP-Switch v1.2.2.exe");
+                string docsExe = Path.Combine(docsDir, "AV IP-Switch v1.4.exe");
                 File.WriteAllBytes(docsExe, new byte[] { 7, 8, 9 });
 
                 AppShortcutResult first = AppShortcut.Install(docsExe, docsDir, desktopDir, null);
@@ -135,16 +135,16 @@ namespace EasyIpSwitch
                 File.WriteAllBytes(newSourceExe, new byte[] { 20, 21, 22 });
 
                 AppShortcutResult result = AppShortcut.Install(newSourceExe, docsDir, desktopDir, null);
-                string expectedCopy = Path.Combine(docsDir, "AV IP-Switch v1.2.2.exe");
+                string expectedCopy = Path.Combine(docsDir, "AV IP-Switch v1.4.exe");
                 string target;
 
                 Assert(result.Success && result.Copied && result.ShortcutUpdated && !result.ShortcutCreated,
-                    "An existing AV IP-Switch shortcut must be updated to v1.2.2.");
+                    "An existing AV IP-Switch shortcut must be updated to v1.4.");
                 Assert(Directory.GetFiles(desktopDir).Length == 1,
                     "Updating an existing app shortcut must not leave duplicates.");
                 Assert(AppShortcut.TryReadShortcutTarget(linkPath, out target)
                     && string.Equals(Path.GetFullPath(target), Path.GetFullPath(expectedCopy), StringComparison.OrdinalIgnoreCase),
-                    "Updated shortcut must target the v1.2.2 copy in Documents.");
+                    "Updated shortcut must target the v1.4 copy in Documents.");
             }
             finally
             {
@@ -233,7 +233,7 @@ namespace EasyIpSwitch
                 Assert(!AppShortcut.IsInstalled(docsDir, Path.Combine(desktopDir, "missing")),
                     "Missing Desktop directory must fail open (return false).");
 
-                string docsExe = Path.Combine(docsDir, "AV IP-Switch v1.2.2.exe");
+                string docsExe = Path.Combine(docsDir, "AV IP-Switch v1.4.exe");
                 File.WriteAllBytes(docsExe, new byte[] { 1, 2, 3 });
                 Assert(!AppShortcut.IsInstalled(docsDir, desktopDir),
                     "Having only the Documents copy without a Desktop shortcut must keep the button visible.");
@@ -262,9 +262,9 @@ namespace EasyIpSwitch
                 string sourceExe = Path.Combine(sourceDir, "AV IP-Switch.exe");
                 File.WriteAllBytes(sourceExe, new byte[] { 4, 5, 6 });
                 AppShortcutResult installed = AppShortcut.Install(sourceExe, docsDir, desktopDir, null);
-                Assert(installed.Success, "Install must update the shortcut to v1.2.2.");
+                Assert(installed.Success, "Install must update the shortcut to v1.4.");
                 Assert(AppShortcut.IsInstalled(docsDir, desktopDir),
-                    "IsInstalled must return true once both v1.2.2 copy and matching shortcut exist.");
+                    "IsInstalled must return true once both v1.4 copy and matching shortcut exist.");
             }
             finally
             {
@@ -429,7 +429,7 @@ namespace EasyIpSwitch
                     result.CopyError = "Disque plein";
                     return result;
                 }
-                result.CopyPath = @"C:\Users\Demo\Documents\AV IP-Switch v1.2.2.exe";
+                result.CopyPath = @"C:\Users\Demo\Documents\AV IP-Switch v1.4.exe";
                 result.Copied = true;
                 result.ShortcutPath = @"C:\Users\Demo\Desktop\AV IP-Switch.lnk";
                 result.ShortcutCreated = true;

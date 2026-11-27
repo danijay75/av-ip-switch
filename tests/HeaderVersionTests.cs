@@ -23,11 +23,11 @@ namespace EasyIpSwitch
         private static void VersionLabelMatchesRelease()
         {
             Assert(AppInfo.ProductName == "AV IP-Switch", "The product name must be AV IP-Switch.");
-            Assert(AppInfo.Version == "1.2.2", "The release must be versioned 1.2.2.");
-            Assert(AppInfo.VersionLabel == "v1.2.2", "The displayed version must read v1.2.2.");
+            Assert(AppInfo.Version == "1.4", "The release must be versioned 1.4.");
+            Assert(AppInfo.VersionLabel == "v1.4", "The displayed version must read v1.4.");
             Version assembly = typeof(AppInfo).Assembly.GetName().Version;
-            Assert(assembly.Major == 1 && assembly.Minor == 2 && assembly.Build == 2,
-                "The assembly must carry the 1.2.2 version.");
+            Assert(assembly.Major == 1 && assembly.Minor == 4 && assembly.Build == 0,
+                "The assembly must carry the 1.4 version.");
         }
 
         private static void LandingPageUrlFollowsLanguage()
